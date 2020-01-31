@@ -1,4 +1,4 @@
-package ro.fortech.secur.auth;
+package ro.secur.auth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

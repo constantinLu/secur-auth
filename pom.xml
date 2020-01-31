@@ -8,10 +8,10 @@
 		<version>2.2.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>ro.fortech</groupId>
-	<artifactId>secur.auth</artifactId>
+	<groupId>ro.secur</groupId>
+	<artifactId>auth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>secur.auth</name>
+	<name>auth</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
