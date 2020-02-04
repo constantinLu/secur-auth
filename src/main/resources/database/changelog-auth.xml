@@ -9,4 +9,16 @@
     <!--        <sqlFile path="/database/changelog/changes/test.sql"/>-->
     <!--    </changeSet>-->
 
+    <changeSet id="1" author="test">
+        <sqlFile path="/database/changelog/changes/test.sql"/>
+    </changeSet>
+
+    <changeSet id="1" author="test">
+        <sqlFile path="/database/changelog/changes/test.sql"/>
+    </changeSet>
+
+    <changeSet id="1" author="test">
+        <sqlFile path="/database/changelog/changes/test.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
