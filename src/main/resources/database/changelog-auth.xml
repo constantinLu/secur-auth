@@ -4,9 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <!--    Example of how to include new script. TODO delete this after first script-->
-    <!--    <changeSet id="1" author="test">-->
-    <!--        <sqlFile path="/database/changelog/changes/test.sql"/>-->
-    <!--    </changeSet>-->
+    <!-- Sprint 0 -->
+    <changeSet id="1" author="beatrice">
+        <sqlFile path="/database/changes/0.0/create_secure-auth.sql"/>
+    </changeSet>
 
 </databaseChangeLog>
