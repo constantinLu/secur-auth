@@ -19,7 +19,7 @@ public class UserEntity {
 
     private String password;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_INFO_ID")
     private UserInfoEntity userInfoEntity;
 
