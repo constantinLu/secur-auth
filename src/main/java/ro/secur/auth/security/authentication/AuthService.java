@@ -1,16 +1,16 @@
-package ro.secur.auth.security.jwt;
+package ro.secur.auth.security.authentication;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
-import ro.secur.auth.security.authentication.AuthenticationRequest;
+import org.springframework.stereotype.Service;
+import ro.secur.auth.security.jwt.JwtUtil;
 
 import java.time.LocalDate;
 import java.util.Date;
 
-@Component
+@Service
 public class AuthService {
 
     private AuthenticationManager authenticationManager;
@@ -29,6 +29,7 @@ public class AuthService {
     public String generateToken(Authentication authentication) {
 
         return Jwts.builder().setSubject(authentication.getName())
+                .claim("roles", authentication.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(jwtUtil.getTokenExpirationDays())))
                 .signWith(jwtUtil.secretKey())

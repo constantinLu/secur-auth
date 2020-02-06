@@ -25,7 +25,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.userService = userService;
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -43,10 +42,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(getEncoder());
-        provider.setUserDetailsService(userService);
-        return provider;
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setPasswordEncoder(getEncoder());
+        authProvider.setUserDetailsService(userService);
+        return authProvider;
     }
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)

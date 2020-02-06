@@ -30,5 +30,4 @@ public class JwtUtil {
     public String getAuthorizationHeader() {
         return HttpHeaders.AUTHORIZATION;
     }
-
 }

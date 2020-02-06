@@ -1,18 +1,20 @@
 package ro.secur.auth.controller;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ro.secur.auth.security.authentication.AuthService;
 import ro.secur.auth.security.authentication.AuthenticationRequest;
 import ro.secur.auth.security.authentication.AuthenticationResponse;
-import ro.secur.auth.security.jwt.AuthService;
 
 @RestController
 @RequestMapping("/api/v1")
+@Slf4j
 public class LoginController {
 
     private final AuthService authService;
@@ -28,7 +30,9 @@ public class LoginController {
         try {
             authentication = authService.authenticate(request);
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
+            String infoMessage = "Incorrect username or password";
+            log.info(infoMessage);
+            throw new Exception(infoMessage, e);
         }
 
         String token = authService.generateToken(authentication);
