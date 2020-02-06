@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ro.secur.auth.common.Role;
 import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserInfoEntity;
 
@@ -20,45 +21,19 @@ public class User implements UserDetails {
 
     private Long id;
 
-    private  String username;
-    private  String password;
-//    private final Set<? extends GrantedAuthority> grantedAuthorities;
-//    private final boolean isAccountNonExpired;
-//    private final boolean isAccountNonLocked;
-//    private final boolean isCredentialsNonExpired;
-//    private final boolean isEnabled;
+    private String username;
+    private String password;
+    private Set<? extends GrantedAuthority> grantedAuthorities;
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isEnabled;
 
-    private UserInfoEntity userInfoEntity;
-    private RoleEntity role;
+    private UserInfo userInfo;
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return grantedAuthorities;
     }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return grantedAuthorities;
-//    }
 }

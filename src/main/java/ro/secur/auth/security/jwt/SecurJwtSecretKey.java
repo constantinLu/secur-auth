@@ -1,10 +1,8 @@
 package ro.secur.auth.security.jwt;
 
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 
 import javax.crypto.SecretKey;
 

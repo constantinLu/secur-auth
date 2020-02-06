@@ -63,4 +63,5 @@ public class SecurUsernameAndPasswordAuthenticationFiler extends UsernamePasswor
 
         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
     }
+
 }

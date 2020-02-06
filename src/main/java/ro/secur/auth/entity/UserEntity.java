@@ -25,6 +25,6 @@ public class UserEntity {
 
     @OneToOne
     @JoinColumn(name = "ROLE_ID")
-    private RoleEntity role;
+    private RoleEntity roleEntity;
 
 }

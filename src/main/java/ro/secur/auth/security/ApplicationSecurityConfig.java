@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,11 +12,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.secur.auth.security.jwt.SecurJwtConfig;
 import ro.secur.auth.security.jwt.SecurJwtSecretKey;
+import ro.secur.auth.security.jwt.SecurJwtTokenVerifier;
 import ro.secur.auth.security.jwt.SecurUsernameAndPasswordAuthenticationFiler;
 import ro.secur.auth.service.UserManagementService;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserManagementService userManagementService;
@@ -36,7 +39,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new SecurUsernameAndPasswordAuthenticationFiler(authenticationManager(), secretKey, jwtConfig));
+                .addFilter(new SecurUsernameAndPasswordAuthenticationFiler(authenticationManager(), secretKey, jwtConfig))
+                .addFilterAfter(new SecurJwtTokenVerifier(jwtConfig, secretKey), SecurUsernameAndPasswordAuthenticationFiler.class);
     }
 
     @Override
