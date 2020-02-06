@@ -21,8 +21,4 @@ public class SecurJwtSecretKey {
     public SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(securJwtConfig.getSecretKey().getBytes());
     }
-
-    public String getAuthorizationHeader() {
-        return HttpHeaders.AUTHORIZATION;
-    }
 }

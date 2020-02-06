@@ -61,6 +61,6 @@ public class SecurUsernameAndPasswordAuthenticationFiler extends UsernamePasswor
                 .signWith(secretKey.getSecretKey())
                 .compact();
 
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
     }
 }
