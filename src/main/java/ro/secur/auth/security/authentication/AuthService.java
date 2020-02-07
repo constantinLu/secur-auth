@@ -5,7 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ro.secur.auth.security.jwt.JwtUtil;
+import ro.secur.auth.security.jwt.JwtConfig;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -15,11 +15,11 @@ public class AuthService {
 
     private AuthenticationManager authenticationManager;
 
-    private final JwtUtil jwtUtil;
+    private final JwtConfig jwtConfig;
 
-    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public AuthService(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
         this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
+        this.jwtConfig = jwtConfig;
     }
 
     public Authentication authenticate(AuthenticationRequest request) {
@@ -27,12 +27,11 @@ public class AuthService {
     }
 
     public String generateToken(Authentication authentication) {
-
         return Jwts.builder().setSubject(authentication.getName())
                 .claim("roles", authentication.getAuthorities())
                 .setIssuedAt(new Date())
-                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(jwtUtil.getTokenExpirationDays())))
-                .signWith(jwtUtil.secretKey())
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(jwtConfig.getTokenExpirationDays())))
+                .signWith(jwtConfig.secretKey())
                 .compact();
     }
 }
