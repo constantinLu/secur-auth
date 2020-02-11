@@ -9,8 +9,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ro.secur.auth.security.filter.AuthenticationFilter;
+import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
 @Configuration
@@ -21,14 +24,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
 
-    public SecurityConfiguration(UserService userService) {
+    private final JwtConfig jwtConfig;
+
+    public SecurityConfiguration(UserService userService, JwtConfig jwtConfig) {
         this.userService = userService;
+        this.jwtConfig = jwtConfig;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfig))
+                .addFilterAfter(new TokenVerifierFilter(jwtConfig), AuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(LOGIN_API).permitAll()
                 .anyRequest()

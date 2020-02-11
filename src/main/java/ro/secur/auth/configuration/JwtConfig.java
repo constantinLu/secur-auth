@@ -1,4 +1,4 @@
-package ro.secur.auth.security.jwt;
+package ro.secur.auth.configuration;
 
 import com.google.common.net.HttpHeaders;
 import io.jsonwebtoken.security.Keys;
@@ -22,12 +22,13 @@ public class JwtConfig {
 
     private Integer tokenExpirationDays;
 
+    public String getAuthorizationHeader() {
+        return HttpHeaders.AUTHORIZATION;
+    }
+
     @Bean
     public SecretKey secretKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String getAuthorizationHeader() {
-        return HttpHeaders.AUTHORIZATION;
-    }
 }

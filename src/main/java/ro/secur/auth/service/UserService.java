@@ -15,6 +15,7 @@ import ro.secur.auth.repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -40,6 +41,11 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Username could not be found in the database: " + username);
         }
         return new User(userDto.getUserName(), userDto.getPassword(), roles);
+    }
+
+    public List<UserDto> getAllUsers() {
+        return ((List<UserEntity>) userRepository.findAll()).stream()
+                .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
 }
 
