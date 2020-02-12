@@ -34,7 +34,7 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByUserName(username);
 
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-        RoleDto roleDto = modelMapper.map(userEntity.getRole(), RoleDto.class);
+        RoleDto roleDto = modelMapper.map(userEntity.getRoles(), RoleDto.class);
         List<GrantedAuthority> roles = Arrays.asList(new SimpleGrantedAuthority(roleDto.getRole().toString()));
 
         if (userDto == null) {

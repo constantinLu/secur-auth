@@ -1,5 +1,6 @@
 package ro.secur.auth.entity;
 
+import liquibase.pro.packaged.J;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,8 +31,9 @@ public class UserEntity {
     @JoinColumn(name = "USER_INFO_ID")
     private UserInfoEntity userInfoEntity;
 
-    // TODO change to @ManyToOne or @ManyToMany
-    @OneToOne
-    @JoinColumn(name = "ROLE_ID")
-    private RoleEntity role;
+
+    @ManyToMany
+    @JoinTable(name = "USER_ROLE", joinColumns = {@JoinColumn(name = "USER_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID")})
+    private Set<RoleEntity> roles;
 }
