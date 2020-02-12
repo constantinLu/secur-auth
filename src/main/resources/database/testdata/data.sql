@@ -28,4 +28,9 @@ INSERT INTO secur_auth.role (ID, ROLE)
 VALUES (2, 'ADMIN');
 
 
+#USER_ROLE TABLE
+INSERT INTO secur_auth.user_role (USER_ID, ROLE_ID) VALUES (1, 1);
+INSERT INTO secur_auth.user_role (USER_ID, ROLE_ID) VALUES (1, 2);
+INSERT INTO secur_auth.user_role (USER_ID, ROLE_ID) VALUES (2, 1);
+INSERT INTO secur_auth.user_role (USER_ID, ROLE_ID) VALUES (3, 1);
 
