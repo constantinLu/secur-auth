@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import static ro.secur.auth.common.Commons.ROLES;
 import static ro.secur.auth.util.Api.LOGIN_URL;
 
 
@@ -58,7 +59,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
-                .claim("roles", authResult.getAuthorities())
+                .claim(ROLES, authResult.getAuthorities())
                 .setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationDays())))
                 .signWith(jwtConfiguration.secretKey())
                 .compact();
