@@ -16,7 +16,6 @@ import java.util.List;
  * Controller used for accessing all the users or getting a specific userID.
  */
 @RestController
-@RequestMapping(Api.VERSION_PREFIX_URL)
 @Slf4j
 public class UserController {
 

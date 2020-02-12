@@ -1,5 +1,7 @@
 package ro.secur.auth.configuration;
 
+
+import static ro.secur.auth.util.Api.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +22,6 @@ import ro.secur.auth.service.UserService;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final static String LOGIN_API = "/api/v1/login";
-
     private final UserService userService;
 
     private final JwtConfig jwtConfig;
@@ -40,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfig))
                 .addFilterAfter(new TokenVerifierFilter(jwtConfig), AuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers(LOGIN_API).permitAll()
+                .antMatchers(LOGIN_URL, USERS_URL).permitAll()
                 .anyRequest()
                 .authenticated();
     }
