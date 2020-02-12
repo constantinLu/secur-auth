@@ -24,11 +24,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
 
-    private final JwtConfig jwtConfig;
+    private final JwtConfiguration jwtConfiguration;
 
-    public SecurityConfiguration(UserService userService, JwtConfig jwtConfig) {
+    public SecurityConfiguration(UserService userService, JwtConfiguration jwtConfiguration) {
         this.userService = userService;
-        this.jwtConfig = jwtConfig;
+        this.jwtConfiguration = jwtConfiguration;
     }
 
     @Override
@@ -37,8 +37,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfig))
-                .addFilterAfter(new TokenVerifierFilter(jwtConfig), AuthenticationFilter.class)
+                .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
+                .addFilterAfter(new TokenVerifierFilter(jwtConfiguration), AuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(LOGIN_URL, USERS_URL).permitAll()
                 .anyRequest()

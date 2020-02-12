@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ro.secur.auth.configuration.JwtConfig;
+import ro.secur.auth.configuration.JwtConfiguration;
 import ro.secur.auth.security.authentication.AuthenticationRequest;
 
 import javax.servlet.FilterChain;
@@ -26,11 +26,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
-    private final JwtConfig jwtConfig;
+    private final JwtConfiguration jwtConfiguration;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, JwtConfiguration jwtConfiguration) {
         this.authenticationManager = authenticationManager;
-        this.jwtConfig = jwtConfig;
+        this.jwtConfiguration = jwtConfiguration;
         setFilterProcessesUrl(LOGIN_URL);
     }
 
@@ -59,10 +59,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("roles", authResult.getAuthorities())
-                .setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationDays())))
-                .signWith(jwtConfig.secretKey())
+                .setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationDays())))
+                .signWith(jwtConfiguration.secretKey())
                 .compact();
 
-        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
+        response.addHeader(jwtConfiguration.getAuthorizationHeader(), jwtConfiguration.getTokenPrefix() + token);
     }
 }

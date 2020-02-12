@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ro.secur.auth.configuration.JwtConfig;
+import ro.secur.auth.configuration.JwtConfiguration;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,27 +24,27 @@ import java.util.stream.Collectors;
 
 public class TokenVerifierFilter extends OncePerRequestFilter {
 
-    private JwtConfig jwtConfig;
+    private JwtConfiguration jwtConfiguration;
 
-    public TokenVerifierFilter(JwtConfig jwtConfig) {
-        this.jwtConfig = jwtConfig;
+    public TokenVerifierFilter(JwtConfiguration jwtConfiguration) {
+        this.jwtConfiguration = jwtConfiguration;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String authorizationHeader = request.getHeader(jwtConfig.getAuthorizationHeader());
-        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
+        String authorizationHeader = request.getHeader(jwtConfiguration.getAuthorizationHeader());
+        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfiguration.getTokenPrefix())) {
             filterChain.doFilter(request, response);
             // the request will be rejected
             return;
         }
 
-        String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(), "");
+        String token = authorizationHeader.replace(jwtConfiguration.getTokenPrefix(), "");
 
         try {
             Jws<Claims> claimsJws = Jwts.parser()
-                    .setSigningKey(jwtConfig.secretKey())
+                    .setSigningKey(jwtConfiguration.secretKey())
                     .parseClaimsJws(token);
 
             Claims body = claimsJws.getBody();
