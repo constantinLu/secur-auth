@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static ro.secur.auth.common.Commons.*;
+
+
 public class TokenVerifierFilter extends OncePerRequestFilter {
 
     private JwtConfiguration jwtConfiguration;
@@ -43,27 +46,28 @@ public class TokenVerifierFilter extends OncePerRequestFilter {
         String token = authorizationHeader.replace(jwtConfiguration.getTokenPrefix(), "");
 
         try {
-            Jws<Claims> claimsJws = Jwts.parser()
-                    .setSigningKey(jwtConfiguration.secretKey())
-                    .parseClaimsJws(token);
 
-            Claims body = claimsJws.getBody();
-            String username = body.getSubject();
-            var authorities = (List<Map<Strings, String>>) body.get("roles");
-            Set<SimpleGrantedAuthority> simpleGrantedAuthority = authorities.stream()
-                    .map(m -> new SimpleGrantedAuthority(m.get("authority")))
-                    .collect(Collectors.toSet());
-
-            Authentication authentication = new PreAuthenticatedAuthenticationToken(
-                    username,
-                    null,
-                    simpleGrantedAuthority
-            );
+            Authentication authentication = getAuthenticated(token);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (JwtException e) {
             throw new JwtException(String.format("Token %s not valid ! ", token));
         }
+    }
+
+    private Authentication getAuthenticated(String token) {
+        Jws<Claims> claimsJws = Jwts.parser()
+                .setSigningKey(jwtConfiguration.secretKey())
+                .parseClaimsJws(token);
+
+        Claims body = claimsJws.getBody();
+        String username = body.getSubject();
+        var authorities = (List<Map<Strings, String>>) body.get(ROLES);
+        Set<SimpleGrantedAuthority> simpleGrantedAuthority = authorities.stream()
+                .map(m -> new SimpleGrantedAuthority(m.get(AUTHORITY)))
+                .collect(Collectors.toSet());
+
+        return new PreAuthenticatedAuthenticationToken(username, null, simpleGrantedAuthority);
     }
 }

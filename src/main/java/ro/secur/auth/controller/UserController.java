@@ -19,6 +19,8 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
+    private static final String ADMIN = "role";
+
     private UserService userService;
 
     public UserController(UserService userService) {
@@ -26,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserDto> listUsers() {
         return userService.getAllUsers();
     }

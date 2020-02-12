@@ -33,13 +33,14 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByUserName(username);
 
+        if (userEntity == null) {
+            throw new UsernameNotFoundException("Username could not be found in the database: " + username);
+        }
+
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
         RoleDto roleDto = modelMapper.map(userEntity.getRole(), RoleDto.class);
         List<GrantedAuthority> roles = Arrays.asList(new SimpleGrantedAuthority(roleDto.getRole().toString()));
 
-        if (userDto == null) {
-            throw new UsernameNotFoundException("Username could not be found in the database: " + username);
-        }
         return new User(userDto.getUserName(), userDto.getPassword(), roles);
     }
 
