@@ -14,15 +14,9 @@
         <sqlFile path="/database/changes/1.0/alter_fk_roleId_SEC-33.sql"/>
     </changeSet>
     <changeSet id="3" author="CatalinLu">
-        <sqlFile path="/database/changes/1.0/alter_fk_userInfo_SEC-33.sql"/>
-    </changeSet>
-    <changeSet id="4" author="CatalinLu">
         <sqlFile path="/database/changes/1.0/alter_drop_column_roleId_SEC-33.sql"/>
     </changeSet>
-    <changeSet id="5" author="CatalinLu">
-        <sqlFile path="/database/changes/1.0/alter_drop_column_userInfo_SEC-33.sql"/>
-    </changeSet>
-    <changeSet id="6" author="CatalinLu">
+    <changeSet id="4" author="CatalinLu">
         <sqlFile path="/database/changes/1.0/create_user_role_table.sql"/>
     </changeSet>
 </databaseChangeLog>
