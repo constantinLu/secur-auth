@@ -8,7 +8,4 @@ public class Commons {
     public static final String ROLES = "roles";
 
     public static final String AUTHORITY = "authority";
-
-    //ROLES
-    public static final String ADMIN = "ROLE_ADMIN";
 }
