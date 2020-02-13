@@ -5,8 +5,8 @@ public enum Role {
     ADMIN,
     USER;
 
-    public static String getRole(Role role) {
-        return "ROLE_" + role.toString();
+    public String role() {
+        return "ROLE_" + this.toString();
     }
 }
 
