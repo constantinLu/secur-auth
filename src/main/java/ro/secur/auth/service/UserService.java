@@ -34,7 +34,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         List<GrantedAuthority> roles = new ArrayList<>();
-        UserEntity userEntity = userRepository.findRoleByUserName(username);
+        UserEntity userEntity = userRepository.findByUserName(username);
         if (userEntity == null) {
             throw new UsernameNotFoundException("Username could not be found in the database: " + username);
         }

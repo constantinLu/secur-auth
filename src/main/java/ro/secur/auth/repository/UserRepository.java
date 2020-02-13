@@ -9,9 +9,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     UserEntity findByUserName(String username);
 
-    @Query("SELECT u FROM UserEntity u left join fetch u.roles where u.userName=:username")
-    UserEntity findRoleByUserName(@Param("username") String username);
-
     @Query("SELECT u FROM UserEntity u left join fetch u.userInfoEntity where u.userName=:username")
     UserEntity findUserInfoByUserName(@Param("username") String username);
 }
