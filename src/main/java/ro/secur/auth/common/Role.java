@@ -1,6 +1,12 @@
 package ro.secur.auth.common;
 
 public enum Role {
+
     ADMIN,
-    USER
+    USER;
+
+    public String role() {
+        return "ROLE_" + this.toString();
+    }
 }
+
