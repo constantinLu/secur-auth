@@ -15,7 +15,7 @@ INSERT INTO secur_auth.role (ID, ROLE)
 VALUES (1, 'ADMIN');
 
 INSERT INTO secur_auth.role (ID, ROLE)
-VALUES (2, 'ADMIN');
+VALUES (2, 'USER');
 
 #USER TABLE
 INSERT INTO secur_auth.user (ID, USER_NAME, PASSWORD, USER_INFO_ID)

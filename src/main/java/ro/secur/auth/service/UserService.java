@@ -10,10 +10,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ro.secur.auth.dto.RoleDto;
 import ro.secur.auth.dto.UserDto;
+import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.repository.UserRepository;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,15 +32,19 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByUserName(username);
 
+        UserEntity userEntity = userRepository.findByUserName(username);
         if (userEntity == null) {
             throw new UsernameNotFoundException("Username could not be found in the database: " + username);
         }
 
+        List<GrantedAuthority> roles = new ArrayList<>();
+
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-        RoleDto roleDto = modelMapper.map(userEntity.getRoles(), RoleDto.class);
-        List<GrantedAuthority> roles = Arrays.asList(new SimpleGrantedAuthority(roleDto.getRole().toString()));
+        userEntity.getRoles().forEach(role -> {
+            RoleDto roleDto = modelMapper.map(role, RoleDto.class);
+            roles.add(new SimpleGrantedAuthority(roleDto.getRole().toString()));
+        });
 
         return new User(userDto.getUserName(), userDto.getPassword(), roles);
     }

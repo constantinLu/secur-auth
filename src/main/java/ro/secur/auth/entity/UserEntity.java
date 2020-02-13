@@ -35,7 +35,7 @@ public class UserEntity {
     private UserInfoEntity userInfoEntity;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE", joinColumns = {@JoinColumn(name = "USER_ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID")})
     private Set<RoleEntity> roles;
