@@ -33,11 +33,12 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        List<GrantedAuthority> roles = new ArrayList<>();
         UserEntity userEntity = userRepository.findByUserName(username);
         if (userEntity == null) {
             throw new UsernameNotFoundException("Username could not be found in the database: " + username);
         }
+
+        List<GrantedAuthority> roles = new ArrayList<>();
 
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
         userEntity.getRoles().forEach(role -> {
