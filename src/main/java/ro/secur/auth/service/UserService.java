@@ -32,20 +32,18 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         List<GrantedAuthority> roles = new ArrayList<>();
-
-        UserEntity userEntity = userRepository.findByUserName(username);
-
+        UserEntity userEntity = userRepository.findRoleByUserName(username);
         if (userEntity == null) {
             throw new UsernameNotFoundException("Username could not be found in the database: " + username);
         }
 
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-
-        for (RoleEntity roleEntity : userEntity.getRoles()) {
-            RoleDto roleDto = modelMapper.map(roleEntity, RoleDto.class);
+        userEntity.getRoles().forEach(role -> {
+            RoleDto roleDto = modelMapper.map(role, RoleDto.class);
             roles.add(new SimpleGrantedAuthority(roleDto.getRole().toString()));
-        }
+        });
 
         return new User(userDto.getUserName(), userDto.getPassword(), roles);
     }
