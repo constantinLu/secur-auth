@@ -9,4 +9,14 @@
         <sqlFile path="/database/changes/0.0/create_secure-auth.sql"/>
     </changeSet>
 
+    <!-- Sprint 1 -->
+    <changeSet id="2" author="CatalinLu">
+        <sqlFile path="/database/changes/1.0/alter_fk_roleId_SEC-33.sql"/>
+    </changeSet>
+    <changeSet id="3" author="CatalinLu">
+        <sqlFile path="/database/changes/1.0/alter_drop_column_roleId_SEC-33.sql"/>
+    </changeSet>
+    <changeSet id="4" author="CatalinLu">
+        <sqlFile path="/database/changes/1.0/create_user_role_table.sql"/>
+    </changeSet>
 </databaseChangeLog>
