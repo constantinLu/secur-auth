@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -155,7 +156,7 @@ public class AuthenticationFilterTest {
                 .andReturn()
                 .getResponse().getStatus();
 
-        assertEquals(200, actualStatus);
+        assertEquals(HttpStatus.OK.value(), actualStatus);
     }
 
     @SneakyThrows
@@ -172,7 +173,7 @@ public class AuthenticationFilterTest {
                 .getResponse().getStatus();
 
 //        TODO check why when credentials are wrong in postman 403 is returned
-        assertEquals(401, actualStatus);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), actualStatus);
     }
 
     @Test
@@ -181,7 +182,7 @@ public class AuthenticationFilterTest {
         mockAuthManagerReturnsAuth();
 
         MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/login")
+                .perform(MockMvcRequestBuilders.post(Api.LOGIN_URL)
                         .content(createJsonObject().toString().getBytes()))
                 .andExpect(status().isOk())
                 .andReturn();
