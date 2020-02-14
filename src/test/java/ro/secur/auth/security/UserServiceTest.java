@@ -55,7 +55,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void wheLoadUserByUsername_returnUser() {
+    public void whenLoadUserByUsername_returnUser() {
 
         mockUserRepoReturnsUser();
 
@@ -67,7 +67,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void wheLoadUserByUsername_throwException() {
+    public void whenLoadUserByUsername_throwException() {
 
         mockUserRepoReturnsNull();
 
