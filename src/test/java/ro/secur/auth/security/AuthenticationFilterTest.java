@@ -27,7 +27,9 @@ import org.springframework.web.context.WebApplicationContext;
 import ro.secur.auth.common.Role;
 import ro.secur.auth.configuration.JwtConfiguration;
 import ro.secur.auth.security.filter.AuthenticationFilter;
+import ro.secur.auth.util.Api;
 
+import javax.ws.rs.core.MediaType;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,7 +85,7 @@ public class AuthenticationFilterTest {
 
     private void mockRequest(JSONObject jsonRequestBody) {
         requestMock = new MockHttpServletRequest();
-        requestMock.setContentType("application/json");
+        requestMock.setContentType(MediaType.APPLICATION_JSON);
         requestMock.setCharacterEncoding("UTF-8");
         requestMock.setContent(jsonRequestBody.toString().getBytes());
     }
@@ -147,7 +149,7 @@ public class AuthenticationFilterTest {
         mockAuthManagerReturnsAuth();
 
         int actualStatus = mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/login")
+                .perform(MockMvcRequestBuilders.post(Api.LOGIN_URL)
                         .content(createJsonObject().toString().getBytes()))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -163,7 +165,7 @@ public class AuthenticationFilterTest {
         mockAuthManagerReturnsBadCredentials();
 
         int actualStatus = mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/login")
+                .perform(MockMvcRequestBuilders.post(Api.LOGIN_URL)
                         .content(createJsonObject().toString().getBytes()))
                 .andExpect(status().isUnauthorized())
                 .andReturn()
