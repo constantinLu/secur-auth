@@ -25,21 +25,18 @@ import static org.mockito.Mockito.when;
 public class UserServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserRepository userRepoMock;
 
     private UserService userService;
 
-    private User user;
+    private User expectedUser;
 
     @BeforeEach
     public void init() {
-
-        userService = new UserService(userRepository, new ModelMapper());
-
-        user = new User("test", "pass", Collections.singletonList(new SimpleGrantedAuthority("USER")));
+        userService = new UserService(userRepoMock, new ModelMapper());
     }
 
-    private void mockUserRepository() {
+    private void mockUserRepoReturnsUser() {
 
         RoleEntity role = new RoleEntity();
         role.setId(1L);
@@ -50,23 +47,36 @@ public class UserServiceTest {
         user.setPassword("pass");
         user.setRoles(Collections.singleton(role));
 
-        when(userRepository.findByUserName(any(String.class))).thenReturn(user);
+        when(userRepoMock.findByUserName(any(String.class))).thenReturn(user);
+    }
+
+    private void mockUserRepoReturnsNull() {
+        when(userRepoMock.findByUserName(any(String.class))).thenReturn(null);
     }
 
     @Test
     public void wheLoadUserByUsername_returnUser() {
 
-        mockUserRepository();
-        User result = (User) userService.loadUserByUsername("test");
+        mockUserRepoReturnsUser();
 
-        Assertions.assertEquals(user, result);
+        expectedUser = new User("test", "pass",
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+        User actualUser = (User) userService.loadUserByUsername("test");
+
+        Assertions.assertEquals(expectedUser, actualUser);
     }
 
     @Test
     public void wheLoadUserByUsername_throwException() {
 
-        when(userRepository.findByUserName(any(String.class))).thenReturn(null);
+        mockUserRepoReturnsNull();
 
-        assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("test"));
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class,
+                () -> userService.loadUserByUsername("test"));
+
+        String expectedMessage = "Username could not be found in the database: test";
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertEquals(expectedMessage, actualMessage);
     }
 }
