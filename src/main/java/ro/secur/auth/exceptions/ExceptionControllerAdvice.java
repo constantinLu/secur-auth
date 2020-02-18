@@ -11,16 +11,16 @@ import ro.secur.auth.exceptions.custom.UserNotFoundException;
 @Slf4j
 public class ExceptionControllerAdvice {
 
-    private final ResponseBuilder response;
+    private final FactoryResponse response;
 
-    public ExceptionControllerAdvice(ResponseBuilder response) {
+    public ExceptionControllerAdvice(FactoryResponse response) {
         this.response = response;
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity handleUserNotFoundException(final UserNotFoundException e) {
         log.error(e.getMessage());
-        return response.error(e, HttpStatus.BAD_REQUEST);
+        return response.create(e, HttpStatus.BAD_REQUEST);
     }
 
 }

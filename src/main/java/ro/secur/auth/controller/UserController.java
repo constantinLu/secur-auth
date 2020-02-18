@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ro.secur.auth.dto.UserDto;
+import ro.secur.auth.exceptions.custom.UserNotFoundException;
 import ro.secur.auth.service.UserService;
 
 import java.util.List;
@@ -24,6 +25,10 @@ public class UserController {
 
     @GetMapping("/users")
     public List<UserDto> listUsers() {
-        return userService.getAllUsers();
+        if (userService.getAllUsers().size() > 2) {
+            throw new UserNotFoundException("Test");
+        } else {
+            return userService.getAllUsers();
+        }
     }
 }

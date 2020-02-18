@@ -4,21 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 
 @Getter
 @Setter
-public class GlobalException {
+public class ExceptionModel {
 
     private String message;
     private HttpStatus httpStatus;
-    private ZonedDateTime timestamp;
+    private LocalDateTime timestamp;
 
-    public GlobalException() {
-    }
-
-    public GlobalException(String message, HttpStatus httpStatus, ZonedDateTime timestamp) {
+    public ExceptionModel(String message, HttpStatus httpStatus, LocalDateTime timestamp) {
         this.message = message;
         this.httpStatus = httpStatus;
         this.timestamp = timestamp;
