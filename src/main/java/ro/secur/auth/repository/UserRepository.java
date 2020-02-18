@@ -11,5 +11,8 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     @Query("SELECT u FROM UserEntity u left join fetch u.userInfoEntity where u.userName=:username")
     UserEntity findUserInfoByUserName(@Param("username") String username);
+
+    @Query("update UserEntity u set u.password = :password where u.userName = :username")
+    void updatePassword(@Param("password") String password, @Param("username") String username);
 }
 

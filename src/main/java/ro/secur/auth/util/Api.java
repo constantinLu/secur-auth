@@ -8,4 +8,6 @@ public class Api {
 
     public static final String USERS_URL = PREFIX_URL + "/users";
 
+    public static final String PASSWORD_URL = PREFIX_URL + "/password";
+
 }

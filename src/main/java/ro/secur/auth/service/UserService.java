@@ -52,4 +52,9 @@ public class UserService implements UserDetailsService {
         return ((List<UserEntity>) userRepository.findAll()).stream()
                 .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
+
+    public void savePassword(UserDto user) {
+        UserEntity userEntity  = modelMapper.map(user, UserEntity.class);
+        userRepository.updatePassword(userEntity.getPassword(), userEntity.getUserName());
+    }
 }
