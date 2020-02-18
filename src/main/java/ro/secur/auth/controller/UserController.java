@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ro.secur.auth.dto.UserDto;
+import ro.secur.auth.security.password.ChangePasswordRequest;
 import ro.secur.auth.service.UserService;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -30,8 +32,8 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public void changePassword(@RequestBody UserDto user) {
-        userService.savePassword(user);
+    public void changePassword(@RequestBody ChangePasswordRequest request) {
+        userService.changePassword(request);
     }
 }
 

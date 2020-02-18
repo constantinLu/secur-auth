@@ -7,12 +7,15 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import ro.secur.auth.configuration.PasswordConfiguration;
 import ro.secur.auth.dto.RoleDto;
 import ro.secur.auth.dto.UserDto;
 import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.exceptions.custom.UserNotFoundException;
 import ro.secur.auth.repository.UserRepository;
+import ro.secur.auth.security.password.ChangePasswordRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +28,12 @@ public class UserService implements UserDetailsService {
 
     private final ModelMapper modelMapper;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    private final PasswordConfiguration passwordConfiguration;
+
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordConfiguration passwordConfiguration) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordConfiguration = passwordConfiguration;
     }
 
     @Override
@@ -53,8 +59,27 @@ public class UserService implements UserDetailsService {
                 .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
 
-    public void savePassword(UserDto user) {
-        UserEntity userEntity  = modelMapper.map(user, UserEntity.class);
-        userRepository.updatePassword(userEntity.getPassword(), userEntity.getUserName());
+
+    public void changePassword(ChangePasswordRequest request) {
+        boolean isAccepted = (!request.getPassword().equals(request.getNewPassword()) &&
+                request.getNewPassword().equals(request.getReTypeNewPassword()));
+
+        UserDto userDto = null;
+        if (isAccepted) {
+            userDto = UserDto.builder()
+                    .userName(request.getUsername())
+                    .password(request.getNewPassword())
+                    .build();
+
+        }
+
+        updatePassword(userDto);
+    }
+
+    private void updatePassword(UserDto userDto) {
+
+        UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
+
+        userRepository.updatePassword(passwordConfiguration.hash(userEntity.getPassword()), userEntity.getUserName());
     }
 }
