@@ -25,10 +25,7 @@ public class UserController {
 
     @GetMapping("/users")
     public List<UserDto> listUsers() {
-        if (userService.getAllUsers().size() > 2) {
-            throw new UserNotFoundException("Test");
-        } else {
-            return userService.getAllUsers();
-        }
+        return userService.getAllUsers();
     }
 }
+
