@@ -3,7 +3,7 @@ package ro.secur.auth.configuration;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ro.secur.auth.exceptions.FactoryResponse;
+import ro.secur.auth.exceptions.ResponseFactory;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -14,8 +14,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public FactoryResponse getResponseCreator() {
-        return new FactoryResponse();
+    public ResponseFactory getResponseCreator() {
+        return new ResponseFactory();
     }
 }
 

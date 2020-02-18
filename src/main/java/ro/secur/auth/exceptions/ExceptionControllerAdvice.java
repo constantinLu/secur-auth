@@ -11,9 +11,9 @@ import ro.secur.auth.exceptions.custom.UserNotFoundException;
 @Slf4j
 public class ExceptionControllerAdvice {
 
-    private final FactoryResponse response;
+    private final ResponseFactory response;
 
-    public ExceptionControllerAdvice(FactoryResponse response) {
+    public ExceptionControllerAdvice(ResponseFactory response) {
         this.response = response;
     }
 
