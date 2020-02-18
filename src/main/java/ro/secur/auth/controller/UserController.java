@@ -10,7 +10,6 @@ import ro.secur.auth.dto.UserDto;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 import ro.secur.auth.service.UserService;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**

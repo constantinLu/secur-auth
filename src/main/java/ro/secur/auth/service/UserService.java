@@ -13,6 +13,7 @@ import ro.secur.auth.configuration.PasswordConfiguration;
 import ro.secur.auth.dto.RoleDto;
 import ro.secur.auth.dto.UserDto;
 import ro.secur.auth.entity.UserEntity;
+import ro.secur.auth.exceptions.custom.PasswordMisMatch;
 import ro.secur.auth.exceptions.custom.UserNotFoundException;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.security.password.ChangePasswordRequest;
@@ -61,25 +62,29 @@ public class UserService implements UserDetailsService {
 
 
     public void changePassword(ChangePasswordRequest request) {
-        boolean isAccepted = (!request.getPassword().equals(request.getNewPassword()) &&
-                request.getNewPassword().equals(request.getReTypeNewPassword()));
 
-        UserDto userDto = null;
-        if (isAccepted) {
-            userDto = UserDto.builder()
+
+        if (!request.getPassword().equals(request.getNewPassword()) &&
+                request.getNewPassword().equals(request.getReTypeNewPassword())) {
+
+            UserDto userDto = UserDto.builder()
                     .userName(request.getUsername())
                     .password(request.getNewPassword())
                     .build();
+            updatePassword(userDto);
 
+        } else {
+            throw new PasswordMisMatch(String.format
+                    ("New Password: %s, RetypedPassword %s : ", request.getNewPassword(), request.getReTypeNewPassword()));
         }
 
-        updatePassword(userDto);
     }
+
 
     private void updatePassword(UserDto userDto) {
 
-        UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
+        UserEntity userEntity = userRepository.findByUserName(userDto.getUserName());
 
-        userRepository.updatePassword(passwordConfiguration.hash(userEntity.getPassword()), userEntity.getUserName());
+        userRepository.updatePassword(passwordConfiguration.hash(userDto.getPassword()), userEntity.getId());
     }
 }
