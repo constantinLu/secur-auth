@@ -14,7 +14,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public ResponseFactory getResponseCreator() {
+    public ResponseFactory getResponseFactory() {
         return new ResponseFactory();
     }
 }
