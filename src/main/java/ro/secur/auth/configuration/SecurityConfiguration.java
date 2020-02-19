@@ -18,7 +18,6 @@ import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
 import static ro.secur.auth.common.Role.ADMIN;
-import static ro.secur.auth.util.Api.LOGIN_URL;
 import static ro.secur.auth.util.Api.USERS_URL;
 
 @Configuration
