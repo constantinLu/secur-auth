@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
-public class ResponseFactory<T> {
+public class ResponseFactory {
     /**
      * @param ex         generic type of create
      * @param httpStatus status code for 400 and 500 series

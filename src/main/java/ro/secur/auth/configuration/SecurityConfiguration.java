@@ -44,7 +44,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new TokenVerifierFilter(jwtConfiguration), AuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(USERS_URL).hasRole(ADMIN.toString())
-                .antMatchers(LOGIN_URL).permitAll()
                 .anyRequest()
                 .authenticated();
     }

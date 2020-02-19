@@ -52,9 +52,12 @@ public class TokenVerifierFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+
         } catch (JwtException e) {
             throw new JwtException(String.format("Token %s not valid ! ", token));
         }
+
+        filterChain.doFilter(request, response);
     }
 
     private Authentication getAuthentication(String token) {
