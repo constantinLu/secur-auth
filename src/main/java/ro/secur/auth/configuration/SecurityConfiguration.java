@@ -1,9 +1,6 @@
 package ro.secur.auth.configuration;
 
 
-import static ro.secur.auth.common.Role.ADMIN;
-import static ro.secur.auth.util.Api.*;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.secur.auth.security.filter.AuthenticationFilter;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
+
+import static ro.secur.auth.common.Role.ADMIN;
+import static ro.secur.auth.util.Api.USERS_URL;
 
 @Configuration
 @EnableWebSecurity
@@ -43,7 +43,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new TokenVerifierFilter(jwtConfiguration), AuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(USERS_URL).hasRole(ADMIN.toString())
-                .antMatchers(LOGIN_URL).permitAll()
                 .anyRequest()
                 .authenticated();
     }

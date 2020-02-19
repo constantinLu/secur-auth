@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static ro.secur.auth.common.Commons.*;
+import static ro.secur.auth.common.Commons.AUTHORITY;
+import static ro.secur.auth.common.Commons.ROLES;
 
 
 public class TokenVerifierFilter extends OncePerRequestFilter {
@@ -52,9 +53,12 @@ public class TokenVerifierFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+
         } catch (JwtException e) {
             throw new JwtException(String.format("Token %s not valid ! ", token));
         }
+
+        filterChain.doFilter(request, response);
     }
 
     private Authentication getAuthentication(String token) {

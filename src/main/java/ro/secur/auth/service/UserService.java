@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ro.secur.auth.dto.RoleDto;
 import ro.secur.auth.dto.UserDto;
-import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
+import ro.secur.auth.exceptions.custom.UserNotFoundException;
 import ro.secur.auth.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -35,9 +35,8 @@ public class UserService implements UserDetailsService {
 
         UserEntity userEntity = userRepository.findByUserName(username);
         if (userEntity == null) {
-            throw new UsernameNotFoundException("Username could not be found in the database: " + username);
+            throw new UserNotFoundException(username);
         }
-
         List<GrantedAuthority> roles = new ArrayList<>();
 
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
@@ -54,4 +53,3 @@ public class UserService implements UserDetailsService {
                 .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
 }
-

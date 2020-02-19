@@ -1,6 +1,5 @@
 package ro.secur.auth.entity;
 
-import liquibase.pro.packaged.J;
 import lombok.Getter;
 import lombok.Setter;
 
