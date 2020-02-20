@@ -118,7 +118,7 @@ public class AuthenticationFilterTest {
     public void whenAttemptAuthentication_returnAuth() {
 
         Authentication expectedAuth = new UsernamePasswordAuthenticationToken("test", "pass",
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.name())));
 
         mockAuthManagerReturnsAuth(expectedAuth);
         mockRequest(createJsonObject("test", "pass"));
