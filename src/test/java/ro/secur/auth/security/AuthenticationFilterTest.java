@@ -61,8 +61,6 @@ public class AuthenticationFilterTest {
 
     private AuthenticationFilter authFilter;
 
-    private Authentication expectedAuth;
-
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -100,10 +98,7 @@ public class AuthenticationFilterTest {
         return jsonRequestBody;
     }
 
-    private void mockAuthManagerReturnsAuth() {
-
-        expectedAuth = new UsernamePasswordAuthenticationToken("test", "pass",
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+    private void mockAuthManagerReturnsAuth(Authentication expectedAuth) {
 
         when(authManagerMock.authenticate(any(Authentication.class))).thenReturn(expectedAuth);
     }
@@ -122,11 +117,12 @@ public class AuthenticationFilterTest {
     @Test
     public void whenAttemptAuthentication_returnAuth() {
 
-        mockAuthManagerReturnsAuth();
+        Authentication expectedAuth = new UsernamePasswordAuthenticationToken("test", "pass",
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+
+        mockAuthManagerReturnsAuth(expectedAuth);
         mockRequest(createJsonObject());
 
-        expectedAuth = new UsernamePasswordAuthenticationToken("test", "pass",
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
         Authentication actualAuth = authFilter.attemptAuthentication(requestMock, responseMock);
 
         assertEquals(expectedAuth, actualAuth);
@@ -147,7 +143,10 @@ public class AuthenticationFilterTest {
     @Test
     public void whenPerformLogin_returnStatusIsOk() {
 
-        mockAuthManagerReturnsAuth();
+        Authentication expectedAuth = new UsernamePasswordAuthenticationToken("test", "pass",
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+
+        mockAuthManagerReturnsAuth(expectedAuth);
 
         int actualStatus = mockMvc
                 .perform(MockMvcRequestBuilders.post(Api.LOGIN_URL)
@@ -179,7 +178,10 @@ public class AuthenticationFilterTest {
     @Test
     public void whenPerformLogin_returnTokenInHeader() throws Exception {
 
-        mockAuthManagerReturnsAuth();
+        Authentication expectedAuth = new UsernamePasswordAuthenticationToken("test", "pass",
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+
+        mockAuthManagerReturnsAuth(expectedAuth);
 
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.post(Api.LOGIN_URL)

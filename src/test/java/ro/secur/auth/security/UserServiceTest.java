@@ -36,16 +36,16 @@ public class UserServiceTest {
         userService = new UserService(userRepoMock, new ModelMapper());
     }
 
-    private void mockUserRepoReturnsUser() {
+    private void mockUserRepoReturnsUser(String username, String password, Role role) {
 
-        RoleEntity role = new RoleEntity();
-        role.setId(1L);
-        role.setRole(Role.USER);
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setId(1L);
+        roleEntity.setRole(role);
 
         UserEntity user = new UserEntity();
-        user.setUserName("test");
-        user.setPassword("pass");
-        user.setRoles(Collections.singleton(role));
+        user.setUserName(username);
+        user.setPassword(password);
+        user.setRoles(Collections.singleton(roleEntity));
 
         when(userRepoMock.findByUserName(any(String.class))).thenReturn(user);
     }
@@ -57,7 +57,7 @@ public class UserServiceTest {
     @Test
     public void whenLoadUserByUsername_returnUser() {
 
-        mockUserRepoReturnsUser();
+        mockUserRepoReturnsUser("test", "pass", Role.USER);
 
         expectedUser = new User("test", "pass",
                 Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
