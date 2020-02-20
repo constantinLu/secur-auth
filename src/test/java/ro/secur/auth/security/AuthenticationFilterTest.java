@@ -89,11 +89,11 @@ public class AuthenticationFilterTest {
         requestMock.setContent(jsonRequestBody.toString().getBytes());
     }
 
-    private JSONObject createJsonObject() throws JSONException {
+    private JSONObject createJsonObject(String username, String password) throws JSONException {
         JSONObject jsonRequestBody = new JSONObject();
 
-        jsonRequestBody.put("username", "test");
-        jsonRequestBody.put("password", "pass");
+        jsonRequestBody.put("username", username);
+        jsonRequestBody.put("password", password);
 
         return jsonRequestBody;
     }
@@ -121,7 +121,7 @@ public class AuthenticationFilterTest {
                 Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
 
         mockAuthManagerReturnsAuth(expectedAuth);
-        mockRequest(createJsonObject());
+        mockRequest(createJsonObject("test", "pass"));
 
         Authentication actualAuth = authFilter.attemptAuthentication(requestMock, responseMock);
 
@@ -150,7 +150,7 @@ public class AuthenticationFilterTest {
 
         int actualStatus = mockMvc
                 .perform(MockMvcRequestBuilders.post(Api.LOGIN_URL)
-                        .content(createJsonObject().toString().getBytes()))
+                        .content(createJsonObject("test", "pass").toString().getBytes()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getStatus();
@@ -166,7 +166,7 @@ public class AuthenticationFilterTest {
 
         int actualStatus = mockMvc
                 .perform(MockMvcRequestBuilders.post(Api.LOGIN_URL)
-                        .content(createJsonObject().toString().getBytes()))
+                        .content(createJsonObject("test", "pass").toString().getBytes()))
                 .andExpect(status().isUnauthorized())
                 .andReturn()
                 .getResponse().getStatus();
@@ -185,7 +185,7 @@ public class AuthenticationFilterTest {
 
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.post(Api.LOGIN_URL)
-                        .content(createJsonObject().toString().getBytes()))
+                        .content(createJsonObject("test", "pass").toString().getBytes()))
                 .andExpect(status().isOk())
                 .andReturn();
 
