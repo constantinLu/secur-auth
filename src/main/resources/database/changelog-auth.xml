@@ -19,4 +19,11 @@
     <changeSet id="4" author="CatalinLu">
         <sqlFile path="/database/changes/1.0/create_user_role_table.sql"/>
     </changeSet>
+    <changeSet id="5" author="CatalinLu">
+        <sqlFile path="/database/changes/2.0/alter_users_add_unique_username.sql"/>
+    </changeSet>
+    <changeSet id="6" author="CatalinLu">
+        <sqlFile path="/database/changes/2.0/alter_user_info_add_unique_email.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
