@@ -4,12 +4,12 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import ro.secur.auth.configuration.PasswordConfiguration;
 import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.exceptions.custom.InvalidPasswordException;
+import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 
@@ -44,7 +44,7 @@ class UserServiceTest {
         userService = new UserService(userRepository, modelMapper, passwordConfiguration);
     }
 
-    public UserServiceTest() {
+    UserServiceTest() {
         this.modelMapper = new ModelMapper();
         this.passwordConfiguration = new PasswordConfiguration();
     }
@@ -78,10 +78,8 @@ class UserServiceTest {
                 .userName("BruceLee")
                 .password("kongfuuuuu")
                 .build();
-
         //when
         when(userRepository.findByUserName(any(String.class))).thenReturn(userEntity);
-
         String cryptedPassword = passwordConfiguration.hash(userEntity.getPassword());
 
         //then
@@ -90,13 +88,13 @@ class UserServiceTest {
     }
 
     @Test
-    void checkPassword_thenThrowEx() throws InvalidPasswordException {
-
-        ChangePasswordRequest request = new ChangePasswordRequest();
-        request.setUsername("lungu");
-        request.setPassword("JohnnyBravo");
-        request.setNewPassword("JohnnyBravo");
-
+    void checkPassword_thenThrowInvalidPasswordEx() {
+        //given
+        ChangePasswordRequest request = ChangePasswordRequest.builder()
+                .username("lungu")
+                .password("JohnnyBravo")
+                .newPassword("JohnnyBravo")
+                .build();
 
         UserEntity userEntity = UserEntity.builder()
                 .id(1L)
@@ -104,12 +102,37 @@ class UserServiceTest {
                 .password("kongfuuuuu")
                 .build();
 
+        //when
         when(userRepository.findByUserName(any(String.class))).thenReturn(userEntity);
         when(passwordConfiguration.verifyHash(anyString(), anyString())).thenReturn(false);
 
+        //then
+        assertThrows(InvalidPasswordException.class, () -> userService.changePassword(request));
 
-        InvalidPasswordException exception = assertThrows(InvalidPasswordException.class,
-                () -> userService.changePassword(request));
+    }
+
+    @Test
+    void checkPassword_thenThrowMismatchEx() {
+        //given
+        ChangePasswordRequest request = ChangePasswordRequest.builder()
+                .username("Ed")
+                .password("Edd")
+                .newPassword("nEddy")
+                .reTypeNewPassword("!")
+                .build();
+
+        UserEntity userEntity = UserEntity.builder()
+                .id(1L)
+                .userName("Ed")
+                .password("Edd")
+                .build();
+
+        //when
+        when(userRepository.findByUserName(any(String.class))).thenReturn(userEntity);
+        when(passwordConfiguration.verifyHash(request.getPassword(), userEntity.getPassword())).thenReturn(true);
+
+        //then
+        assertThrows(PasswordMisMatchException.class, () -> userService.changePassword(request));
 
     }
 }
