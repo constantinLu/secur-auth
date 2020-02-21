@@ -3,6 +3,7 @@ package ro.secur.auth.controller;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
@@ -45,7 +46,7 @@ class UserControllerTest {
     }
 
     @Test
-    void listUsers() throws  Exception {
+    void showAllUsers() throws  Exception {
         UserDto userLungu = UserDto.builder()
                 .id(1L)
                 .userName("Lungu")
@@ -57,11 +58,5 @@ class UserControllerTest {
 
         mockMvc.perform(get("/api/v1/users"))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    void changePassword() {
-
-
     }
 }

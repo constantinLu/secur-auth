@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ExceptionModel {
+class ExceptionModel {
 
     private String message;
     private HttpStatus httpStatus;

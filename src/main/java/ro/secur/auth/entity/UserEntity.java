@@ -1,6 +1,9 @@
 package ro.secur.auth.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -19,6 +22,9 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "USER")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
 
     @Id

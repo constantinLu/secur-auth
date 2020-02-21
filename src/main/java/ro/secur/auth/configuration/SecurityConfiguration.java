@@ -26,12 +26,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtConfiguration jwtConfiguration;
 
-    private final ApplicationConfiguration configuration;
+    private final PasswordConfiguration passwordConfiguration;
 
-    public SecurityConfiguration(UserService userService, JwtConfiguration jwtConfiguration, ApplicationConfiguration configuration) {
+    public SecurityConfiguration(UserService userService, JwtConfiguration jwtConfiguration, PasswordConfiguration passwordConfiguration) {
         this.userService = userService;
         this.jwtConfiguration = jwtConfiguration;
-        this.configuration = configuration;
+        this.passwordConfiguration = passwordConfiguration;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(configuration.getEncoder());
+        authProvider.setPasswordEncoder(passwordConfiguration.getEncoder());
         authProvider.setUserDetailsService(userService);
         return authProvider;
     }

@@ -1,14 +1,13 @@
 package ro.secur.auth.configuration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import java.security.SecureRandom;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class PasswordConfiguration {
-
-
-    private static final SecureRandom RAND = new SecureRandom();
 
     public String hash(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
@@ -16,5 +15,10 @@ public class PasswordConfiguration {
 
     public boolean verifyHash(String password, String hash) {
         return BCrypt.checkpw(password, hash);
+    }
+
+    @Bean
+    PasswordEncoder getEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

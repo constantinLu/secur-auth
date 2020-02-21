@@ -1,13 +1,17 @@
 package ro.secur.auth.security.password;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.naming.directory.SearchResult;
 
 @Getter
 @Setter
-public class ChangePasswordRequest{
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChangePasswordRequest {
 
     private String username;
 

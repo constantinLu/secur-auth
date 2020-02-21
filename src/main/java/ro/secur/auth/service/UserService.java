@@ -7,13 +7,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import ro.secur.auth.configuration.PasswordConfiguration;
 import ro.secur.auth.dto.RoleDto;
 import ro.secur.auth.dto.UserDto;
 import ro.secur.auth.entity.UserEntity;
-import ro.secur.auth.exceptions.custom.PasswordMisMatch;
+import ro.secur.auth.exceptions.custom.InvalidPasswordException;
+import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
 import ro.secur.auth.exceptions.custom.UserNotFoundException;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.security.password.ChangePasswordRequest;
@@ -55,6 +55,7 @@ public class UserService implements UserDetailsService {
         return new User(userDto.getUserName(), userDto.getPassword(), roles);
     }
 
+
     public List<UserDto> getAllUsers() {
         return ((List<UserEntity>) userRepository.findAll()).stream()
                 .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
@@ -63,6 +64,14 @@ public class UserService implements UserDetailsService {
 
     public void changePassword(ChangePasswordRequest request) {
 
+        UserEntity userEntity = userRepository.findByUserName(request.getUsername());
+        if (userEntity == null) {
+            throw new UserNotFoundException(request.getUsername());
+        }
+
+        if (!passwordConfiguration.verifyHash(request.getPassword(), userEntity.getPassword())) {
+            throw new InvalidPasswordException(request.getUsername());
+        }
 
         if (!request.getPassword().equals(request.getNewPassword()) &&
                 request.getNewPassword().equals(request.getReTypeNewPassword())) {
@@ -74,17 +83,13 @@ public class UserService implements UserDetailsService {
             updatePassword(userDto);
 
         } else {
-            throw new PasswordMisMatch(String.format
-                    ("New Password: %s, RetypedPassword %s : ", request.getNewPassword(), request.getReTypeNewPassword()));
+            throw new PasswordMisMatchException(String.format
+                    ("New Password: %s, RetypedPassword %s", request.getNewPassword(), request.getReTypeNewPassword()));
         }
-
     }
 
 
     private void updatePassword(UserDto userDto) {
-
-        UserEntity userEntity = userRepository.findByUserName(userDto.getUserName());
-
-        userRepository.updatePassword(passwordConfiguration.hash(userDto.getPassword()), userEntity.getId());
+        userRepository.updatePassword(passwordConfiguration.hash(userDto.getPassword()), userDto.getUserName());
     }
 }
