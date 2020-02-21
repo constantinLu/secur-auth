@@ -142,7 +142,6 @@ class UserServiceTest {
     void checkPassword_thenThrowInvalidPasswordEx() {
         //given
         ChangePasswordRequest request = ChangePasswordRequest.builder()
-                .username("lungu")
                 .password("JohnnyBravo")
                 .newPassword("JohnnyBravo")
                 .build();
@@ -158,7 +157,7 @@ class UserServiceTest {
         when(passwordConfiguration.verifyHash(anyString(), anyString())).thenReturn(false);
 
         //then
-        assertThrows(InvalidPasswordException.class, () -> userService.changePassword(request));
+        assertThrows(InvalidPasswordException.class, () -> userService.changePassword("lungu", request));
 
     }
 
@@ -167,7 +166,6 @@ class UserServiceTest {
     void checkPassword_thenThrowMismatchEx() {
         //given
         ChangePasswordRequest request = ChangePasswordRequest.builder()
-                .username("Ed")
                 .password("Edd")
                 .newPassword("nEddy")
                 .reTypeNewPassword("!")
@@ -183,7 +181,7 @@ class UserServiceTest {
         when(passwordConfiguration.verifyHash(request.getPassword(), userEntity.getPassword())).thenReturn(true);
 
         //then
-        assertThrows(PasswordMisMatchException.class, () -> userService.changePassword(request));
+        assertThrows(PasswordMisMatchException.class, () -> userService.changePassword("Ed", request));
 
     }
 }

@@ -62,22 +62,22 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public void changePassword(ChangePasswordRequest request) {
+    public void changePassword(String username, ChangePasswordRequest request) {
 
-        UserEntity userEntity = userRepository.findByUserName(request.getUsername());
+        UserEntity userEntity = userRepository.findByUserName(username);
         if (userEntity == null) {
-            throw new UserNotFoundException(request.getUsername());
+            throw new UserNotFoundException(username);
         }
 
         if (!passwordConfiguration.verifyHash(request.getPassword(), userEntity.getPassword())) {
-            throw new InvalidPasswordException(request.getUsername());
+            throw new InvalidPasswordException(username);
         }
 
         if (!request.getPassword().equals(request.getNewPassword()) &&
                 request.getNewPassword().equals(request.getReTypeNewPassword())) {
 
             UserDto userDto = UserDto.builder()
-                    .userName(request.getUsername())
+                    .userName(username)
                     .password(request.getNewPassword())
                     .build();
             updatePassword(userDto);
