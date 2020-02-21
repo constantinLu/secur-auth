@@ -60,7 +60,7 @@ public class UserServiceTest {
         mockUserRepoReturnsUser("test", "pass", Role.USER);
 
         expectedUser = new User("test", "pass",
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.name())));
         User actualUser = (User) userService.loadUserByUsername("test");
 
         Assertions.assertEquals(expectedUser, actualUser);

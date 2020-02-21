@@ -144,7 +144,7 @@ public class AuthenticationFilterTest {
     public void whenPerformLogin_returnStatusIsOk() {
 
         Authentication expectedAuth = new UsernamePasswordAuthenticationToken("test", "pass",
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.name())));
 
         mockAuthManagerReturnsAuth(expectedAuth);
 
@@ -179,7 +179,7 @@ public class AuthenticationFilterTest {
     public void whenPerformLogin_returnTokenInHeader() throws Exception {
 
         Authentication expectedAuth = new UsernamePasswordAuthenticationToken("test", "pass",
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.toString())));
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.name())));
 
         mockAuthManagerReturnsAuth(expectedAuth);
 
