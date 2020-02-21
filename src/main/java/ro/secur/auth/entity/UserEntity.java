@@ -20,11 +20,11 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "USER")
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "USER")
 public class UserEntity {
 
     @Id

@@ -1,23 +1,29 @@
 package ro.secur.auth.service;
 
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import ro.secur.auth.common.Role;
 import ro.secur.auth.configuration.PasswordConfiguration;
+import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.exceptions.custom.InvalidPasswordException;
 import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
+import ro.secur.auth.exceptions.custom.UserNotFoundException;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -31,23 +37,69 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private ModelMapper modelMapper;
-
-    @Mock
     private PasswordConfiguration passwordConfiguration;
 
     private UserService userService;
 
-
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, modelMapper, passwordConfiguration);
+        userService = new UserService(userRepository, new ModelMapper(), passwordConfiguration);
+
     }
 
-    UserServiceTest() {
-        this.modelMapper = new ModelMapper();
-        this.passwordConfiguration = new PasswordConfiguration();
+    public UserServiceTest() {
+        passwordConfiguration = new PasswordConfiguration();
     }
+
+    void mockUserRepoReturnsUser(String username, String password, Role role) {
+
+        RoleEntity roleEntity = RoleEntity.builder()
+                .id(1L)
+                .role(role)
+                .build();
+
+        UserEntity user = UserEntity.builder()
+                .id(1L)
+                .userName(username)
+                .password(password)
+                .roles(Collections.singleton(roleEntity))
+                .build();
+
+        when(userRepository.findByUserName(any(String.class))).thenReturn(user);
+    }
+
+    void mockUserRepoReturnsNull() {
+        when(userRepository.findByUserName(any(String.class))).thenReturn(null);
+    }
+
+
+    @Test
+    void whenLoadUserByUsername_returnUser() {
+
+        mockUserRepoReturnsUser("test", "pass", Role.USER);
+
+        User expectedUser = new User("test", "pass",
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.name())));
+        User actualUser = (User) userService.loadUserByUsername("test");
+
+        Assertions.assertEquals(expectedUser, actualUser);
+    }
+
+
+    @Test
+    void whenLoadUserByUsername_throwException() {
+
+        mockUserRepoReturnsNull();
+
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class,
+                () -> userService.loadUserByUsername("test"));
+
+        String expectedMessage = "Entity not found in the database for user: test";
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertEquals(expectedMessage, actualMessage);
+    }
+
 
     @Test
     void getAllUsers() {
@@ -80,12 +132,11 @@ class UserServiceTest {
                 .build();
         //when
         when(userRepository.findByUserName(any(String.class))).thenReturn(userEntity);
-        String cryptedPassword = passwordConfiguration.hash(userEntity.getPassword());
 
         //then
         assertEquals(userEntity.getPassword(), "kongfuuuuu");
-        assertTrue(passwordConfiguration.verifyHash("kongfuuuuu", cryptedPassword));
     }
+
 
     @Test
     void checkPassword_thenThrowInvalidPasswordEx() {
@@ -111,6 +162,7 @@ class UserServiceTest {
 
     }
 
+
     @Test
     void checkPassword_thenThrowMismatchEx() {
         //given
@@ -126,7 +178,6 @@ class UserServiceTest {
                 .userName("Ed")
                 .password("Edd")
                 .build();
-
         //when
         when(userRepository.findByUserName(any(String.class))).thenReturn(userEntity);
         when(passwordConfiguration.verifyHash(request.getPassword(), userEntity.getPassword())).thenReturn(true);
