@@ -89,7 +89,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    private void updatePassword(UserDto userDto) {
+    public void updatePassword(UserDto userDto) {
         userRepository.updatePassword(passwordConfiguration.hash(userDto.getPassword()), userDto.getUserName());
     }
 }

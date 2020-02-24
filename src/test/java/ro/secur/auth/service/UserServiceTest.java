@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -44,8 +42,10 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userService = new UserService(userRepository, new ModelMapper(), passwordConfiguration);
-        passwordConfiguration = new PasswordConfiguration();
+    }
 
+    public UserServiceTest() {
+        passwordConfiguration = new PasswordConfiguration();
     }
 
     void mockUserRepoReturnsUser(String username, String password, Role role) {
@@ -111,32 +111,13 @@ class UserServiceTest {
         //when
         when(userRepository.findAll()).thenReturn(userEntities);
 
-        List<UserEntity> receivedEntities = (List<UserEntity>) userRepository.findAll();
-
         //then
-        assertEquals(receivedEntities.size(), 1);
-        verify(userRepository, times(1)).findAll();
+        assertEquals(userEntities.size(), 1);
     }
 
 
     @Test
-    void changePassword() {
-        //given
-        UserEntity userEntity = UserEntity.builder()
-                .id(1L)
-                .userName("BruceLee")
-                .password("kongfuuuuu")
-                .build();
-        //when
-        when(userRepository.findByUserName(any(String.class))).thenReturn(userEntity);
-
-        //then
-        assertEquals(userEntity.getPassword(), "kongfuuuuu");
-    }
-
-
-    @Test
-    void checkPassword_thenThrowInvalidPasswordEx() {
+    void changePassword_thenThrowInvalidPasswordEx() {
         //given
         ChangePasswordRequest request = ChangePasswordRequest.builder()
                 .password("JohnnyBravo")
@@ -160,7 +141,7 @@ class UserServiceTest {
 
 
     @Test
-    void checkPassword_thenThrowMismatchEx() {
+    void changePassword_thenThrowMismatchEx() {
         //given
         ChangePasswordRequest request = ChangePasswordRequest.builder()
                 .password("Edd")
