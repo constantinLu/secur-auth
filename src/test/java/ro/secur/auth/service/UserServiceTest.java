@@ -44,11 +44,8 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userService = new UserService(userRepository, new ModelMapper(), passwordConfiguration);
-
-    }
-
-    public UserServiceTest() {
         passwordConfiguration = new PasswordConfiguration();
+
     }
 
     void mockUserRepoReturnsUser(String username, String password, Role role) {
