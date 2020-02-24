@@ -112,7 +112,7 @@ class UserServiceTest {
         when(userRepository.findAll()).thenReturn(userEntities);
 
         //then
-        assertEquals(userEntities.size(), 1);
+        assertEquals(userService.getAllUsers().size(), 1);
     }
 
 
