@@ -1,4 +1,4 @@
-package ro.secur.auth.dto;
+package ro.secur.auth.security.password;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,15 +8,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserDto {
-
-    private Long id;
-
-    private String userName;
+public class ChangePasswordRequest {
 
     private String password;
+
+    private String newPassword;
+
+    private String reTypeNewPassword;
+
 
 }

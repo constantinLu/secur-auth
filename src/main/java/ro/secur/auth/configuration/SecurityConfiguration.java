@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.secur.auth.security.filter.AuthenticationFilter;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
@@ -28,9 +26,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtConfiguration jwtConfiguration;
 
-    public SecurityConfiguration(UserService userService, JwtConfiguration jwtConfiguration) {
+    private final PasswordConfiguration passwordConfiguration;
+
+    public SecurityConfiguration(UserService userService, JwtConfiguration jwtConfiguration, PasswordConfiguration passwordConfiguration) {
         this.userService = userService;
         this.jwtConfiguration = jwtConfiguration;
+        this.passwordConfiguration = passwordConfiguration;
     }
 
     @Override
@@ -55,15 +56,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(getEncoder());
+        authProvider.setPasswordEncoder(passwordConfiguration.getEncoder());
         authProvider.setUserDetailsService(userService);
         return authProvider;
     }
 
-    @Bean
-    PasswordEncoder getEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
