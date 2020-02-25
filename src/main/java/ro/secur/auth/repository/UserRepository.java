@@ -6,13 +6,18 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ro.secur.auth.entity.UserEntity;
+import ro.secur.auth.entity.UserInfoEntity;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     UserEntity findByUserName(String username);
 
+    UserEntity findByResetToken(String resetToken);
+
     @Query("SELECT u FROM UserEntity u left join fetch u.userInfoEntity where u.userName=:username")
     UserEntity findUserInfoByUserName(@Param("username") String username);
+
+    UserEntity findByUserInfoEntity(@Param("userInfoEntity") UserInfoEntity userInfoEntity);
 
     @Transactional
     @Modifying

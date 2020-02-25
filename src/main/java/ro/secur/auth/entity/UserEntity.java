@@ -35,6 +35,8 @@ public class UserEntity {
 
     private String password;
 
+    private String resetToken;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_INFO_ID")
     private UserInfoEntity userInfoEntity;
