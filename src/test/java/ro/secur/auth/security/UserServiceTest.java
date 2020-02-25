@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ro.secur.auth.common.Role;
 import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
@@ -71,7 +72,7 @@ public class UserServiceTest {
 
         mockUserRepoReturnsNull();
 
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class,
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class,
                 () -> userService.loadUserByUsername("test"));
 
         String expectedMessage = "Entity not found in the database for user: test";
