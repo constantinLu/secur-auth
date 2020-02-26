@@ -7,7 +7,7 @@ pipeline{
 
     environment {
         COMMITTER_EMAIL = bat (
-            script: "git --no-pager show -s --format=\'$ae\'",
+            script: "git --no-pager show -s --format=%ae",
             returnStdout: true
         ).trim()
     }
