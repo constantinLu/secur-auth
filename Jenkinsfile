@@ -26,7 +26,7 @@ pipeline{
                 attachLog: true,
                 subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
                 body: "Failed stage: ${FAILED_STAGE} . Please go to ${env.BUILD_URL} for more details.} test",
-                recipientProviders: "cosmina.iacob94@gmail.com"
+                recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']]
             )
         }
     }
