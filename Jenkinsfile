@@ -25,7 +25,7 @@ pipeline{
             emailext (
                 attachLog: true,
                 subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
-                body: "Failed stage: ${FAILED_STAGE} . '\n' Please go to ${env.BUILD_URL} for more details. '\n'  ${FILE, path="build.log"}",
+                body: "Failed stage: ${FAILED_STAGE} . Please go to ${env.BUILD_URL} for more details. ${FILE, path="build.log"}",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']]
             )
         }
