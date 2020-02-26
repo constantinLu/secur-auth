@@ -20,7 +20,7 @@ pipeline{
         failure {
             emailext (
                 subject: 'Test',
-                body: 'Build failed at stage ' ${FAILED_STAGE},
+                body: 'Build failed at stage ' [${FAILED_STAGE}],
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']]
             )
         }
