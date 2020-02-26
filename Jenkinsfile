@@ -15,7 +15,7 @@ pipeline{
             steps {
                 script {
                     FAILED_STAGE=env.STAGE_NAME
-                    bat 'mvn test'
+                    bat 'mvn clean test'
                 }
             }
         }
