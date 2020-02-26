@@ -24,7 +24,7 @@ pipeline{
         failure {
             emailext (
                 subject: 'Test',
-                body: $FAILED_STAGE,
+                body: ${FAILED_STAGE},
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']]
             )
         }
