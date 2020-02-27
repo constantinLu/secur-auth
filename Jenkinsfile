@@ -6,7 +6,7 @@ pipeline{
     }
 
     environment {
-        LAST_COMMIT= bat (
+        LAST_COMMIT = bat (
             script: "git show -s --format=%h",
             returnStdout: true
         ).trim
