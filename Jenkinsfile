@@ -6,12 +6,8 @@ pipeline{
     }
 
     environment {
-        LAST_COMMIT = bat (
-            script: "git show -s --format=%h",
-            returnStdout: true
-        ).trim
         COMMITTER_EMAIL = bat (
-            script: "git show -s --format=%ae LAST_COMMIT",
+            script: "git show -s --format=%ae env.GIT_COMMIT",
             returnStdout: true
         ).trim()
     }
