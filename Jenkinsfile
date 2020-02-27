@@ -7,7 +7,7 @@ pipeline{
 
     environment {
         COMMITTER_EMAIL = bat (
-            script: 'git show -s --format=%ae env.GIT_COMMIT',
+            script: 'git show -s --pretty=format:%ae env.GIT_COMMIT',
             returnStdout: true
         ).trim()
     }
