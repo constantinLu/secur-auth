@@ -11,7 +11,7 @@ pipeline{
             returnStdout: true
         ).trim
         COMMITTER_EMAIL = bat (
-            script: "git show -s --format=%ae ${env.LAST_COMMIT}",
+            script: "git show -s --format=%ae LAST_COMMIT",
             returnStdout: true
         ).trim()
     }
