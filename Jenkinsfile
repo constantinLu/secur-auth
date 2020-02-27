@@ -7,7 +7,7 @@ pipeline{
 
     environment {
         LAST_COMMIT= bat (
-            script: "git show -s --format=%h"
+            script: "git show -s --format=%h",
             returnStdout: true
         ).trim
         COMMITTER_EMAIL = bat (
