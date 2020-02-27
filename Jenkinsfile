@@ -5,13 +5,6 @@ pipeline{
         pollSCM('')
     }
 
-    environment {
-        COMMITTER_EMAIL = bat (
-            script: "git --no-pager show -s --pretty=format:%ae",
-            returnStdout: true
-        ).trim()
-    }
-
     stages {
         stage('Build') {
             steps {
@@ -38,7 +31,7 @@ pipeline{
                 attachLog: true,
                 subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
                 body: "Please go to ${env.BUILD_URL} for more details.",
-                to: "${COMMITTER_EMAIL}"
+                recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider'])
             )
         }
 
