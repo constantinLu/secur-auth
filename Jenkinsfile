@@ -5,13 +5,6 @@ pipeline{
         pollSCM('')
     }
 
-    environment {
-        COMMITTER_EMAIL = bat (
-            script: 'git show -s --pretty=format:%ae ef439b23',
-            returnStdout: true
-        ).trim()
-    }
-
     stages {
         stage('Build') {
             steps {
@@ -38,7 +31,7 @@ pipeline{
                 attachLog: true,
                 subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
                 body: "Please go to ${env.BUILD_URL} for more details.",
-                to: "${COMMITTER_EMAIL}"
+                to: "cosmina.iacob94@gmail.com, lunguucatalin@gmail.com, beatricedtoma@gmail.com, mada.magdalena97@gmail.com"
             )
         }
 
@@ -47,7 +40,7 @@ pipeline{
                 attachLog: true,
                 subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
                 body: "Failed stage: ${FAILED_STAGE} . Please go to ${env.BUILD_URL} for more details.",
-                to: "cosmina.iacob94@gmail.com"
+                to: "cosmina.iacob94@gmail.com, lunguucatalin@gmail.com, beatricedtoma@gmail.com, mada.magdalena97@gmail.com"
             )
         }
     }
