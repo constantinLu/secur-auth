@@ -26,15 +26,6 @@ pipeline{
     }
 
     post {
-        success {
-            emailext (
-                attachLog: true,
-                subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
-                body: "Please go to ${env.BUILD_URL} for more details.",
-                to: "cosmina.iacob94@gmail.com, lunguucatalin@gmail.com, beatricedtoma@gmail.com, mada.magdalena97@gmail.com"
-            )
-        }
-
         failure {
             emailext (
                 attachLog: true,
