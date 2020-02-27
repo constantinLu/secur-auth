@@ -29,5 +29,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
     @Query("update UserEntity u set u.password = :password where u.resetToken = :resetToken")
     void resetPassword(@Param("password") String password, @Param("resetToken") String resetToken);
 
+
+
 }
 

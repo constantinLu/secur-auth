@@ -113,7 +113,7 @@ public class UserService implements UserDetailsService {
 
             save(userEntity);
 
-            String appUrl = request.getScheme() + "://" + request.getServerName();
+            String appUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
 
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(userEntity.getUserInfoEntity().getEmail());
@@ -129,13 +129,19 @@ public class UserService implements UserDetailsService {
 
         UserEntity userEntity = userRepository.findByResetToken(token);
 
-        if (request.getNewPassword().equals(request.getReTypeNewPassword())) {
+        if (userEntity != null) {
 
-            UserDto userDto = UserDto.builder()
-                    .resetToken(null)
-                    .password(request.getNewPassword())
-                    .build();
-            resetPassword(userDto);
+            if (request.getNewPassword().equals(request.getReTypeNewPassword())) {
+
+                userEntity.setResetToken(null);
+                userEntity.setPassword(passwordConfiguration.hash(request.getNewPassword()));
+
+                save(userEntity);
+
+                UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+
+                resetPassword(userDto);
+            }
         }
     }
 
