@@ -7,7 +7,7 @@ pipeline{
 
     environment {
         COMMITTER_EMAIL = bat (
-            script: "git show -s --format=%ae env.GIT_COMMIT",
+            script: 'git show -s --format=%ae env.GIT_COMMIT',
             returnStdout: true
         ).trim()
     }
@@ -46,7 +46,7 @@ pipeline{
             emailext (
                 attachLog: true,
                 subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
-                body: 'Failed stage: ${FAILED_STAGE} . Please go to ${env.BUILD_URL} for more details.',
+                body: "Failed stage: ${FAILED_STAGE} . Please go to ${env.BUILD_URL} for more details.",
                 to: "cosmina.iacob94@gmail.com"
             )
         }
