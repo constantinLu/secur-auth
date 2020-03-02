@@ -119,7 +119,7 @@ public class UserService implements UserDetailsService {
             mailMessage.setTo(userEntity.getUserInfoEntity().getEmail());
             mailMessage.setSubject("Complete Password Reset!");
             mailMessage.setFrom("secur.app.20@gmail.com");
-            mailMessage.setText("To reset your password, click the link below:\n" + appUrl + "/reset?token=" + userEntity.getResetToken());
+            mailMessage.setText("To reset your password, click the link below:\n" + "http://localhost:3000/reset-password");
 
             emailService.sendEmail(mailMessage);
         }
