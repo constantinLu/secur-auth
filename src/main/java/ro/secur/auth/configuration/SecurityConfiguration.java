@@ -11,11 +11,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ro.secur.auth.security.filter.AuthenticationFilter;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
-import static ro.secur.auth.common.Role.ADMIN;
 import static ro.secur.auth.util.Api.USERS_URL;
 
 @Configuration
@@ -43,7 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
                 .addFilterAfter(new TokenVerifierFilter(jwtConfiguration), AuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers(USERS_URL).hasRole(ADMIN.toString())
+                .antMatchers(USERS_URL).permitAll()
                 .anyRequest()
                 .authenticated();
     }
@@ -66,5 +67,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+//    @Bean
+////    CorsConfigurationSource corsConfigurationSource() {
+////        CorsConfiguration configuration = new CorsConfiguration();
+////        configuration.setAllowedOrigins(Arrays.asList("*"));
+////        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+////        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+////        source.registerCorsConfiguration("/**", configuration);
+////        return source;
+//    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**");
+            }
+        };
     }
 }
