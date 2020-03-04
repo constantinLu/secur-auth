@@ -2,6 +2,7 @@ package ro.secur.auth.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * Controller used for accessing all the users or getting a specific userID.
  */
+@CrossOrigin()
 @RestController
 @Slf4j
 public class UserController {

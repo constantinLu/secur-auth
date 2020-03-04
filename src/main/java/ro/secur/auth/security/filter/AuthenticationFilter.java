@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import static ro.secur.auth.common.Commons.ROLES;
 import static ro.secur.auth.util.Api.LOGIN_URL;
 
-
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -38,7 +37,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
         try {
+
             AuthenticationRequest authenticationRequest = new ObjectMapper().readValue(request.getInputStream(), AuthenticationRequest.class);
+
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getUsername(),
                     authenticationRequest.getPassword()
@@ -60,6 +61,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setSubject(authResult.getName())
                 .claim(ROLES, authResult.getAuthorities())
                 .setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationDays())))
+                //TODO: TESTING PURPOSES . DELETE AFTER
+                //.setExpiration(DateUtil.asDate((LocalDateTime.now()).plusDays(jwtConfiguration.getTokenExpirationDays())))
                 .signWith(jwtConfiguration.secretKey())
                 .compact();
 
