@@ -16,8 +16,7 @@ import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
 import static ro.secur.auth.common.Role.ADMIN;
-import static ro.secur.auth.util.Api.FORGOT_PASSWORD_URL;
-import static ro.secur.auth.util.Api.USERS_URL;
+import static ro.secur.auth.util.Api.*;
 
 @Configuration
 @EnableWebSecurity
@@ -38,11 +37,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 .antMatchers(FORGOT_PASSWORD_URL).permitAll()
+                .antMatchers(RESET_PASSWORD_URL).permitAll()
                 .and()
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
                 .addFilterAfter(new TokenVerifierFilter(jwtConfiguration), AuthenticationFilter.class)

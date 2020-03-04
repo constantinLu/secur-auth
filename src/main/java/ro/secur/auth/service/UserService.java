@@ -105,7 +105,9 @@ public class UserService implements UserDetailsService {
 
     public void forgotPassword(String email, HttpServletRequest request) {
 
-        UserInfoEntity userInfoEntity = userInfoRepository.findByEmail(email);
+        String email1 = email.replace("{\"email\":{\"email\":\"", "");
+        String email2 = email1.replace("\"}}", "");
+        UserInfoEntity userInfoEntity = userInfoRepository.findByEmail(email2);
         UserEntity userEntity = userRepository.findByUserInfoEntity(userInfoEntity);
 
         if (userEntity != null) {
@@ -115,11 +117,13 @@ public class UserService implements UserDetailsService {
 
             String appUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
 
+            String token = userEntity.getResetToken();
+
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(userEntity.getUserInfoEntity().getEmail());
             mailMessage.setSubject("Complete Password Reset!");
             mailMessage.setFrom("secur.app.20@gmail.com");
-            mailMessage.setText("To reset your password, click the link below:\n" + "http://localhost:3000/reset-password");
+            mailMessage.setText("To reset your password, click the link below:\n" + "http://localhost:3000/" + token + "/resetPassword");
 
             emailService.sendEmail(mailMessage);
         }

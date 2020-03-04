@@ -6,22 +6,24 @@ import ro.secur.auth.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Controller used for forgot password.
+ */
 @RestController
 public class PasswordController {
 
     private UserService userService;
 
-
     public PasswordController(UserService userService) {
         this.userService = userService;
     }
 
-    @CrossOrigin(origins = "*")
     @PostMapping("/forgotPassword")
     public void forgotPassword(@RequestBody String email, HttpServletRequest request) {
         userService.forgotPassword(email, request);
     }
 
+    @CrossOrigin
     @PutMapping("/{token}/resetPassword")
     public void resetPassword(@PathVariable String token, @RequestBody ChangePasswordRequest request) {
         userService.resetUserPassword(token, request);
