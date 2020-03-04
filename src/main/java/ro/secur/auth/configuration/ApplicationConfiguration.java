@@ -18,4 +18,3 @@ public class ApplicationConfiguration {
         return new ResponseFactory();
     }
 }
-
