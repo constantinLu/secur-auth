@@ -17,15 +17,4 @@ public class ApplicationConfiguration {
     public ResponseFactory getResponseFactory() {
         return new ResponseFactory();
     }
-
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/users").allowedOrigins("http://localhost:3000/");
-//            }
-//        };
 }
-
-

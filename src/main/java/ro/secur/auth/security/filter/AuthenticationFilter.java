@@ -1,7 +1,6 @@
 package ro.secur.auth.security.filter;
 
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,13 +14,9 @@ import ro.secur.auth.security.authentication.AuthenticationRequest;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static ro.secur.auth.common.Commons.ROLES;
 import static ro.secur.auth.util.Api.LOGIN_URL;
@@ -41,26 +36,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-//        try {
-//            StringBuilder stringBuilder = new StringBuilder();
-//            InputStream inputstream = request.getInputStream();
-//            BufferedReader br = new BufferedReader(new InputStreamReader(inputstream));
-//
-//            String s = null;
-//            StringBuilder sb = new StringBuilder();
-//            while ((s = br.readLine()) != null) {
-//                stringBuilder.append(s);
-//            }
-//            System.out.println(stringBuilder.toString());
-//
-//        } catch (Exception e) {
-//
-//        }
         try {
 
-
             AuthenticationRequest authenticationRequest = new ObjectMapper().readValue(request.getInputStream(), AuthenticationRequest.class);
-
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getUsername(),
@@ -82,344 +60,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim(ROLES, authResult.getAuthorities())
-                .setExpiration(Date.valueOf(String.valueOf(LocalDateTime.now().plusMinutes(jwtConfiguration.getTokenExpirationDays()))))
+                .setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationDays())))
+                //TODO: TESTING PURPOSES . DELETE AFTER
+                //.setExpiration(DateUtil.asDate((LocalDateTime.now()).plusDays(jwtConfiguration.getTokenExpirationDays())))
                 .signWith(jwtConfiguration.secretKey())
                 .compact();
 
         response.addHeader(jwtConfiguration.getAuthorizationHeader(), jwtConfiguration.getTokenPrefix() + token);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
