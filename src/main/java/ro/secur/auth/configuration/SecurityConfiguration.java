@@ -37,7 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http    .cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -69,23 +69,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
+    //THIS: UNCOMMENT THIS IF THE CALL IS NOT WORKING
 //    @Bean
-////    CorsConfigurationSource corsConfigurationSource() {
-////        CorsConfiguration configuration = new CorsConfiguration();
-////        configuration.setAllowedOrigins(Arrays.asList("*"));
-////        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
-////        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-////        source.registerCorsConfiguration("/**", configuration);
-////        return source;
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**").allowedOrigins("*");
+//            }
+//        };
 //    }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**");
-            }
-        };
-    }
 }
