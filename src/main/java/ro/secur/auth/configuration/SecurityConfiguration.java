@@ -11,12 +11,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ro.secur.auth.security.filter.AuthenticationFilter;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
+import static ro.secur.auth.common.Role.ADMIN;
 import static ro.secur.auth.util.Api.USERS_URL;
 
 @Configuration
@@ -37,14 +36,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http    .cors().and()
+        http
+                .cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
                 .addFilterAfter(new TokenVerifierFilter(jwtConfiguration), AuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers(USERS_URL).permitAll()
+                .antMatchers(USERS_URL).hasRole(ADMIN.toString())
                 .anyRequest()
                 .authenticated();
     }
@@ -69,8 +69,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
-    //THIS: UNCOMMENT THIS IF THE CALL IS NOT WORKING
+    //TODO: UNCOMMENT THIS IF THE CALL IS NOT WORKING
 //    @Bean
 //    public WebMvcConfigurer corsConfigurer() {
 //        return new WebMvcConfigurer() {
@@ -80,5 +79,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //            }
 //        };
 //    }
-
 }
