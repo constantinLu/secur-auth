@@ -104,28 +104,54 @@ public class UserService implements UserDetailsService {
 
     public void forgotPassword(String email, HttpServletRequest request) {
 
-        String email1 = email.replace("{\"email\":{\"email\":\"", "");
-        String email2 = email1.replace("\"}}", "");
-        UserInfoEntity userInfoEntity = userInfoRepository.findByEmail(email2);
+        String finalEmail = extractEmailAddress(email);
+        UserInfoEntity userInfoEntity = userInfoRepository.findByEmail(finalEmail);
         UserEntity userEntity = userRepository.findByUserInfoEntity(userInfoEntity);
 
         if (userEntity != null) {
-            userEntity.setResetToken(UUID.randomUUID().toString());
-
+            userEntity.setResetToken(createUserResetToken());
             save(userEntity);
-
-            String appUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-
             String token = userEntity.getResetToken();
-
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(userEntity.getUserInfoEntity().getEmail());
-            mailMessage.setSubject("Complete Password Reset!");
-            mailMessage.setFrom("secur.app.20@gmail.com");
-            mailMessage.setText("To reset your password, click the link below:\n" + "http://localhost:3000/" + token + "/resetPassword");
-
+            SimpleMailMessage mailMessage = getSimpleMailMessage(userEntity, token);
             emailService.sendEmail(mailMessage);
         }
+    }
+
+    private String createUserResetToken() {
+        boolean tokenExists = true;
+        String token = UUID.randomUUID().toString();
+        while (tokenExists) {
+            UserEntity userEntity = userRepository.findByResetToken(token);
+            if (userEntity == null) {
+                tokenExists = false;
+            } else {
+                token = UUID.randomUUID().toString();
+            }
+        }
+        return token;
+    }
+
+    private String extractEmailAddress(String email) {
+        return email.replace("{\"email\":{\"email\":\"", "").replace("\"}}", "");
+    }
+
+    private SimpleMailMessage getSimpleMailMessage(UserEntity userEntity, String token) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(userEntity.getUserInfoEntity().getEmail());
+        mailMessage.setSubject("Complete Password Reset!");
+        mailMessage.setFrom("secur.app.20@gmail.com");
+        mailMessage.setText(createEmailBody(token));
+        return mailMessage;
+    }
+
+    private String createEmailBody(String token) {
+        StringBuilder emailBody = new StringBuilder();
+        //TODO get frontend URL from eureka
+        emailBody.append("To reset your password, click the link below:\n")
+                .append("http://localhost:3000/")
+                .append(token)
+                .append("/resetPassword");
+        return emailBody.toString();
     }
 
     public void resetUserPassword(String token, ChangePasswordRequest request) {
@@ -133,16 +159,11 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByResetToken(token);
 
         if (userEntity != null) {
-
             if (request.getNewPassword().equals(request.getReTypeNewPassword())) {
-
                 userEntity.setResetToken(null);
                 userEntity.setPassword(passwordConfiguration.hash(request.getNewPassword()));
-
                 save(userEntity);
-
                 UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-
                 resetPassword(userDto);
             }
         }

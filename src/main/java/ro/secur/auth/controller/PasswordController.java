@@ -18,6 +18,7 @@ public class PasswordController {
         this.userService = userService;
     }
 
+    @CrossOrigin
     @PostMapping("/forgotPassword")
     public void forgotPassword(@RequestBody String email, HttpServletRequest request) {
         userService.forgotPassword(email, request);
