@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ro.secur.auth.configuration.JwtConfiguration;
 import ro.secur.auth.security.authentication.AuthenticationRequest;
+import ro.secur.auth.util.DateUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static ro.secur.auth.common.Commons.ROLES;
 import static ro.secur.auth.util.Api.LOGIN_URL;
@@ -60,9 +62,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim(ROLES, authResult.getAuthorities())
-                .setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationDays())))
+                //.setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationDays())))
                 //TODO: TESTING PURPOSES . DELETE AFTER
-                //.setExpiration(DateUtil.asDate((LocalDateTime.now()).plusDays(jwtConfiguration.getTokenExpirationDays())))
+                .setExpiration(DateUtil.asDate((LocalDateTime.now()).plusMinutes(jwtConfiguration.getTokenExpirationDays())))
                 .signWith(jwtConfiguration.secretKey())
                 .compact();
 
