@@ -22,6 +22,8 @@ public class UserEntity {
 
     private String password;
 
+    private String resetToken;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_INFO_ID")
     private UserInfoEntity userInfoEntity;

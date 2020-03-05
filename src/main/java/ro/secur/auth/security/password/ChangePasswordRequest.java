@@ -19,5 +19,5 @@ public class ChangePasswordRequest {
 
     private String reTypeNewPassword;
 
-
+    
 }

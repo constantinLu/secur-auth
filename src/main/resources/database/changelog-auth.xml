@@ -26,4 +26,9 @@
         <sqlFile path="/database/changes/2.0/alter_user_info_add_unique_email.sql"/>
     </changeSet>
 
+
+    <!-- Sprint 3 -->
+    <changeSet id="7" author="MadalinaMa">
+        <sqlFile path="/database/changes/3.0/alter_add_column_resetToken_SEC-48.sql"/>
+    </changeSet>
 </databaseChangeLog>
