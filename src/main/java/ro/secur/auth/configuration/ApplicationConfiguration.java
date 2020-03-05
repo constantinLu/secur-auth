@@ -29,8 +29,8 @@ public class ApplicationConfiguration {
         mailSender.setPort(587);
 
         //TODO create email address or enter your email and password for testing
-        mailSender.setUsername("");
-        mailSender.setPassword("");
+//        mailSender.setUsername("");
+//        mailSender.setPassword("");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
