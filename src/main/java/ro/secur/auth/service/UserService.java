@@ -97,8 +97,6 @@ public class UserService implements UserDetailsService {
                     .build();
             updatePassword(userDto);
 
-            updatePassword(userDto);
-
         } else {
             throw new PasswordMisMatchException(String.format
                     ("New Password: %s, RetypedPassword %s", request.getNewPassword(), request.getReTypeNewPassword()));
