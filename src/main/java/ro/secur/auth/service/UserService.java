@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
 
     private final EmailService emailService;
 
-    public UserService(UserRepository userRepository, UserInfoRepository userInfoRepository, ModelMapper modelMapper, PasswordConfiguration passwordConfiguration, EmailService emailService) {
+    public UserService(UserRepository userRepository, UserInfoRepository userInfoRepository, RoleRepository roleRepository, ModelMapper modelMapper, PasswordConfiguration passwordConfiguration, EmailService emailService) {
         this.userRepository = userRepository;
         this.userInfoRepository = userInfoRepository;
         this.modelMapper = modelMapper;
