@@ -91,10 +91,9 @@ public class UserService implements UserDetailsService {
         if (!request.getPassword().equals(request.getNewPassword()) &&
                 request.getNewPassword().equals(request.getReTypeNewPassword())) {
 
-            UserDto userDto = UserDto.builder()
-                    .userName(username)
-                    .password(request.getNewPassword())
-                    .build();
+            userEntity.setPassword(request.getNewPassword());
+            UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+
             updatePassword(userDto);
 
         } else {
