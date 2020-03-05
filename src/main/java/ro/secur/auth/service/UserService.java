@@ -9,20 +9,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ro.secur.auth.common.Role;
 import ro.secur.auth.configuration.PasswordConfiguration;
 import ro.secur.auth.dto.RoleDto;
 import ro.secur.auth.dto.UserDto;
+import ro.secur.auth.dto.UserInfoDto;
+import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.entity.UserInfoEntity;
 import ro.secur.auth.exceptions.custom.InvalidPasswordException;
 import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
 import ro.secur.auth.exceptions.custom.UserNotFoundException;
+import ro.secur.auth.repository.RoleRepository;
 import ro.secur.auth.repository.UserInfoRepository;
 import ro.secur.auth.repository.UserRepository;
+import ro.secur.auth.requests.RegisterRequest;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,6 +39,8 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     private final UserInfoRepository userInfoRepository;
+
+    private final RoleRepository roleRepository;
 
     private final ModelMapper modelMapper;
 
@@ -46,6 +54,7 @@ public class UserService implements UserDetailsService {
         this.modelMapper = modelMapper;
         this.passwordConfiguration = passwordConfiguration;
         this.emailService = emailService;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -177,5 +186,27 @@ public class UserService implements UserDetailsService {
 
     public void resetPassword(UserDto userDto) {
         userRepository.resetPassword(passwordConfiguration.hash(userDto.getPassword()), userDto.getResetToken());
+    }
+
+    public void registerUser(RegisterRequest request) {
+
+        UserDto userDto = UserDto.builder()
+                .userName(request.getUsername())
+                .password(passwordConfiguration.getEncoder().encode(request.getPassword()))
+                .build();
+
+        UserInfoDto userInfoDto = UserInfoDto.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .build();
+
+        RoleEntity roleEntity = roleRepository.findByRole(Role.USER);
+
+        UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
+        userEntity.setUserInfoEntity(modelMapper.map(userInfoDto, UserInfoEntity.class));
+        userEntity.setRoles(Collections.singleton(roleEntity));
+
+        userRepository.save(userEntity);
     }
 }

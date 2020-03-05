@@ -17,6 +17,7 @@ import ro.secur.auth.exceptions.custom.InvalidPasswordException;
 import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
 import ro.secur.auth.exceptions.custom.UserNotFoundException;
 import ro.secur.auth.repository.UserInfoRepository;
+import ro.secur.auth.repository.RoleRepository;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 
@@ -34,6 +35,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private RoleRepository roleRepository;
 
     @Mock
     private UserInfoRepository userInfoRepository;
