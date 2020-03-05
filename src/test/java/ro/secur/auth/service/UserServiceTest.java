@@ -16,6 +16,7 @@ import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.exceptions.custom.InvalidPasswordException;
 import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
 import ro.secur.auth.exceptions.custom.UserNotFoundException;
+import ro.secur.auth.repository.RoleRepository;
 import ro.secur.auth.repository.UserInfoRepository;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.security.password.ChangePasswordRequest;
@@ -36,6 +37,9 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
+    private RoleRepository roleRepository;
+
+    @Mock
     private UserInfoRepository userInfoRepository;
 
     @Mock
@@ -47,7 +51,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, userInfoRepository, new ModelMapper(), passwordConfiguration, emailService);
+        userService = new UserService(userRepository, userInfoRepository, roleRepository, new ModelMapper(), passwordConfiguration, emailService);
     }
 
 
