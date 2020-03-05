@@ -36,4 +36,10 @@ public class ExceptionControllerAdvice {
         log.error(e.getMessage());
         return response.create(e, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity handleException(final Exception e) {
+        log.error(e.getMessage());
+        return response.create(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
