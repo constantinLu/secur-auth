@@ -81,10 +81,9 @@ public class UserService implements UserDetailsService {
                 .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
 
-    public void save(UserEntity userEntity) {
+    private void save(UserEntity userEntity) {
         userRepository.save(userEntity);
     }
-
 
     public void changePassword(String username, ChangePasswordRequest request) {
 
@@ -104,6 +103,7 @@ public class UserService implements UserDetailsService {
                     .userName(username)
                     .password(request.getNewPassword())
                     .build();
+
             updatePassword(userDto);
 
         } else {
@@ -156,7 +156,7 @@ public class UserService implements UserDetailsService {
 
     private String createEmailBody(String token) {
         StringBuilder emailBody = new StringBuilder();
-        //TODO get frontend URL from eureka
+        //TODO: Get frontend URL from eureka
         emailBody.append("To reset your password, click the link below:\n")
                 .append("http://localhost:3000/")
                 .append(token)
@@ -179,12 +179,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
-    public void updatePassword(UserDto userDto) {
+    private void updatePassword(UserDto userDto) {
         userRepository.updatePassword(passwordConfiguration.hash(userDto.getPassword()), userDto.getUserName());
     }
 
-    public void resetPassword(UserDto userDto) {
+    private void resetPassword(UserDto userDto) {
         userRepository.resetPassword(passwordConfiguration.hash(userDto.getPassword()), userDto.getResetToken());
     }
 
