@@ -1,8 +1,13 @@
 package ro.secur.auth.controller;
 
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import ro.secur.auth.dto.UserDto;
 import ro.secur.auth.requests.RegisterRequest;
 import ro.secur.auth.security.password.ChangePasswordRequest;
@@ -13,9 +18,8 @@ import java.util.List;
 /**
  * Controller used for accessing all the users or getting a specific userID.
  */
-@CrossOrigin()
+@CrossOrigin
 @RestController
-@Slf4j
 public class UserController {
 
     private UserService userService;

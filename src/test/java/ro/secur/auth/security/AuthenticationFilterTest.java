@@ -171,7 +171,7 @@ public class AuthenticationFilterTest {
                 .andReturn()
                 .getResponse().getStatus();
 
-//        TODO check why when credentials are wrong in postman 403 is returned
+        //TODO: check why when credentials are wrong in postman 403 is returned
         assertEquals(HttpStatus.UNAUTHORIZED.value(), actualStatus);
     }
 
