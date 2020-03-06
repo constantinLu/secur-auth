@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ro.secur.auth.exceptions.custom.AuthException;
+import ro.secur.auth.exceptions.custom.InputStreamException;
 import ro.secur.auth.exceptions.custom.InvalidPasswordException;
 import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
 import ro.secur.auth.exceptions.custom.UserNotFoundException;
@@ -41,5 +43,17 @@ public class ExceptionControllerAdvice {
     public ResponseEntity handleException(final Exception e) {
         log.error(e.getMessage());
         return response.create(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity handleException(final AuthException e) {
+        log.error(e.getMessage());
+        return response.create(e, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InputStreamException.class)
+    public ResponseEntity handleException(final InputStreamException e) {
+        log.error(e.getMessage());
+        return response.create(e, HttpStatus.NOT_FOUND);
     }
 }

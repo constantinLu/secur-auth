@@ -12,11 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import ro.secur.auth.security.filter.AuthenticationFilter;
+import ro.secur.auth.security.filter.JwtAuthenticationEntryPoint;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
-import static ro.secur.auth.common.Role.ADMIN;
-import static ro.secur.auth.util.Api.*;
+import static ro.secur.auth.util.Api.FORGOT_PASSWORD_URL;
+import static ro.secur.auth.util.Api.RESET_PASSWORD_URL;
+import static ro.secur.auth.util.Api.USERS_URL;
 
 @Configuration
 @EnableWebSecurity
@@ -28,27 +30,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final PasswordConfiguration passwordConfiguration;
 
-    public SecurityConfiguration(UserService userService, JwtConfiguration jwtConfiguration, PasswordConfiguration passwordConfiguration) {
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    public SecurityConfiguration(UserService userService, JwtConfiguration jwtConfiguration, PasswordConfiguration passwordConfiguration, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.userService = userService;
         this.jwtConfiguration = jwtConfiguration;
         this.passwordConfiguration = passwordConfiguration;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and()
                 .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(FORGOT_PASSWORD_URL).permitAll()
-                .antMatchers(RESET_PASSWORD_URL).permitAll()
+                .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL, USERS_URL).permitAll()
                 .and()
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
                 .addFilterAfter(new TokenVerifierFilter(jwtConfiguration), AuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers(USERS_URL).hasRole(ADMIN.toString())
                 .anyRequest()
                 .authenticated();
     }
@@ -73,14 +77,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    //TODO: UNCOMMENT THIS IF THE CALL IS NOT WORKING
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**").allowedOrigins("*");
-//            }
-//        };
-//    }
 }

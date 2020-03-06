@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ro.secur.auth.configuration.JwtConfiguration;
+import ro.secur.auth.exceptions.custom.AuthException;
+import ro.secur.auth.exceptions.custom.InputStreamException;
 import ro.secur.auth.security.authentication.AuthenticationRequest;
 import ro.secur.auth.util.DateUtil;
 
@@ -16,8 +18,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static ro.secur.auth.common.Commons.ROLES;
@@ -48,10 +48,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             );
             return authenticationManager.authenticate(authentication);
 
-        } catch (IOException e) {
+        } catch (AuthenticationException e) {
             logger.info("Authentication not possible with the current credentials.");
-            // TODO SEE WHAT CAN WE CUSTOMIZE THIS ERROR. (errormapping)
-            throw new RuntimeException(e);
+            throw new AuthException(e.getMessage());
+        } catch (IOException e) {
+            logger.info("Request from input stream not valid.");
+            throw new InputStreamException(e.getMessage());
         }
     }
 
@@ -63,7 +65,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setSubject(authResult.getName())
                 .claim(ROLES, authResult.getAuthorities())
                 //.setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationDays())))
-                //TODO: TESTING PURPOSES . DELETE AFTER
+                //TODO: TESTING PURPOSES. DELETE AFTER
                 .setExpiration(DateUtil.asDate((LocalDateTime.now()).plusMinutes(jwtConfiguration.getTokenExpirationDays())))
                 .signWith(jwtConfiguration.secretKey())
                 .compact();
