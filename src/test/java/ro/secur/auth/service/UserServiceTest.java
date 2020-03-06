@@ -96,7 +96,7 @@ class UserServiceTest {
 
         mockUserRepoReturnsNull();
 
-        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class,
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class,
                 () -> userService.loadUserByUsername("test"));
 
         String expectedMessage = "Entity not found in the database for user: test";
