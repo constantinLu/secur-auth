@@ -38,7 +38,7 @@ pipeline{
             emailext (
                 attachLog: true,
                 subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
-                body: "Failed stage: ${FAILED_STAGE} . Please go to ${env.BUILD_URL} for more details.",
+                body: "Failed stage: ${FAILED_STAGE} . Please go to ${env.BUILD_URL} for more details. test",
                 to: "cosmina.iacob94@gmail.com, lunguucatalin@gmail.com, beatricedtoma@gmail.com, mada.magdalena97@gmail.com"
             )
         }
