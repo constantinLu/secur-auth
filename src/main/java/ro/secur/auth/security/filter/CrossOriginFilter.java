@@ -1,7 +1,12 @@
 package ro.secur.auth.security.filter;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -11,7 +16,15 @@ import java.io.IOException;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@ConfigurationProperties(prefix = "cross")
+@Setter
+@Getter
 public class CrossOriginFilter implements Filter {
+
+    private String accessControlAllowOrigin;
+    private String accessControlAllowMethods;
+    private String accessControlAllowHeaders;
+    private String accessControlExposeHeaders;
 
     public CrossOriginFilter() {
     }
@@ -20,13 +33,12 @@ public class CrossOriginFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
-        response.setHeader("Access-Control-Max-Age", "12000");
-        response.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        response.setHeader("Access-Control-Expose-Headers", "*");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, accessControlAllowOrigin);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, accessControlAllowMethods);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, accessControlAllowHeaders);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, accessControlExposeHeaders);
 
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        if (HttpMethod.OPTIONS.toString().equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             chain.doFilter(req, res);
