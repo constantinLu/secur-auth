@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import ro.secur.auth.security.filter.AuthenticationFilter;
 import ro.secur.auth.security.filter.JwtAuthenticationEntryPoint;
+import ro.secur.auth.security.filter.CrossOriginFilter;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
@@ -42,6 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors().and()
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
@@ -50,6 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL, USERS_URL).permitAll()
                 .and()
+                .addFilterBefore(new CrossOriginFilter(), AuthenticationFilter.class)
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
                 .addFilterAfter(new TokenVerifierFilter(jwtConfiguration), AuthenticationFilter.class)
                 .authorizeRequests()
@@ -76,5 +79,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 }
