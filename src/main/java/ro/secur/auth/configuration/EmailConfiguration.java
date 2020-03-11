@@ -17,4 +17,6 @@ public class EmailConfiguration {
 
     private String host;
 
+    private Integer port;
+
 }

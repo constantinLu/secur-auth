@@ -32,7 +32,7 @@ public class ApplicationConfiguration {
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(emailConfiguration.getHost());
-        mailSender.setPort(587);
+        mailSender.setPort(emailConfiguration.getPort());
 
         mailSender.setUsername(emailConfiguration.getEmailAddress());
         mailSender.setPassword(emailConfiguration.getEmailPassword());
