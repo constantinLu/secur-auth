@@ -26,6 +26,7 @@ import ro.secur.auth.repository.UserInfoRepository;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.requests.RegisterRequest;
 import ro.secur.auth.security.password.ChangePasswordRequest;
+import ro.secur.auth.util.DateUtil;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -176,7 +177,7 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByResetToken(token);
 
         if (userEntity != null) {
-            if (isDateInThePast(userEntity.getTokenExpirationTime())) {
+            if (DateUtil.isDateInThePast(userEntity.getTokenExpirationTime())) {
                 // TODO [SEC-81] Mapping BE - FE errors
                 throw new RuntimeException("Reset password token is expired");
             }
@@ -197,20 +198,11 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByResetToken(token);
         if (userEntity != null) {
             Timestamp tokenExpirationTime = userEntity.getTokenExpirationTime();
-            return isDateInThePast(tokenExpirationTime);
+            return DateUtil.isDateInThePast(tokenExpirationTime);
         } else {
             // TODO [SEC-81] Mapping BE - FE errors
             throw new RuntimeException("Given token does not exist");
         }
-    }
-
-    /**
-     * Checks if the date-time given as parameter is in the past
-     * @param time The given date-time
-     * @return true if that date-time is in the past
-     */
-    private Boolean isDateInThePast(Timestamp time) {
-        return time.before(Timestamp.valueOf(LocalDateTime.now()));
     }
 
     private void updatePassword(UserDto userDto) {

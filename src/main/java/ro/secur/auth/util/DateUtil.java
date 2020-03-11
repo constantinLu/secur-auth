@@ -1,5 +1,6 @@
 package ro.secur.auth.util;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,5 +26,14 @@ public class DateUtil {
 
     public static LocalDateTime asLocalDateTime(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    /**
+     * Checks if the date-time given as parameter is in the past
+     * @param time The given date-time
+     * @return true if that date-time is in the past
+     */
+    public static Boolean isDateInThePast(Timestamp time) {
+        return time.before(Timestamp.valueOf(LocalDateTime.now()));
     }
 }
