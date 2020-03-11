@@ -31,11 +31,11 @@ public class ApplicationConfiguration {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(emailConfiguration.host);
+        mailSender.setHost(emailConfiguration.getHost());
         mailSender.setPort(587);
 
-        mailSender.setUsername(emailConfiguration.emailAddress);
-        mailSender.setPassword(emailConfiguration.emailPassword);
+        mailSender.setUsername(emailConfiguration.getEmailAddress());
+        mailSender.setPassword(emailConfiguration.getEmailPassword());
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
