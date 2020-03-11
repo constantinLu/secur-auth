@@ -11,5 +11,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "reset.password")
 public class ForgotPasswordTokenConfiguration {
 
-    public Integer tokenExpirationTime;
+    private Integer tokenExpirationTime;
 }

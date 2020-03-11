@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.*;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 import ro.secur.auth.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Controller used for forgot password.
  */
@@ -29,8 +27,8 @@ public class PasswordController {
         userService.resetUserPassword(token, request);
     }
 
-    @GetMapping("/{token}/tokenExpired")
-    public Boolean isResetPasswordTokenExpired(@PathVariable String token) {
+    @GetMapping("/tokenExpired")
+    public Boolean isResetPasswordTokenExpired(@RequestParam String token) {
         return userService.isResetPasswordTokenExpired(token);
     }
 }

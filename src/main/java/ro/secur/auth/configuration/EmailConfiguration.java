@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "email.configuration")
 public class EmailConfiguration {
 
-    public String emailAddress;
+    private String emailAddress;
 
-    public String emailPassword;
+    private String emailPassword;
 
-    public String host;
+    private String host;
 
 }
