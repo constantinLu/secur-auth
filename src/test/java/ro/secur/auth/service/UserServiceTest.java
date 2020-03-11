@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import ro.secur.auth.common.Role;
+import ro.secur.auth.configuration.ForgotPasswordTokenConfiguration;
 import ro.secur.auth.configuration.PasswordConfiguration;
 import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
@@ -49,9 +50,11 @@ class UserServiceTest {
 
     private EmailService emailService;
 
+    private ForgotPasswordTokenConfiguration forgotPasswordTokenConfiguration;
+
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, userInfoRepository, roleRepository, new ModelMapper(), passwordConfiguration, emailService);
+        userService = new UserService(userRepository, userInfoRepository, roleRepository, new ModelMapper(), passwordConfiguration, forgotPasswordTokenConfiguration, emailService);
     }
 
 

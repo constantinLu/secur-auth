@@ -12,6 +12,12 @@ import java.util.Properties;
 @Configuration
 public class ApplicationConfiguration {
 
+    private final EmailConfiguration emailConfiguration;
+
+    public ApplicationConfiguration(EmailConfiguration emailConfiguration) {
+        this.emailConfiguration = emailConfiguration;
+    }
+
     @Bean
     public ModelMapper getModelMapper() {
         return new ModelMapper();
@@ -25,12 +31,11 @@ public class ApplicationConfiguration {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
+        mailSender.setHost(emailConfiguration.host);
         mailSender.setPort(587);
 
-        //TODO: Create a new email address or add your email address and password
-        mailSender.setUsername("");
-        mailSender.setPassword("");
+        mailSender.setUsername(emailConfiguration.emailAddress);
+        mailSender.setPassword(emailConfiguration.emailPassword);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

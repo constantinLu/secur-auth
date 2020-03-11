@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ro.secur.auth.common.Role;
+import ro.secur.auth.configuration.ForgotPasswordTokenConfiguration;
 import ro.secur.auth.configuration.PasswordConfiguration;
 import ro.secur.auth.dto.RoleDto;
 import ro.secur.auth.dto.UserDto;
@@ -26,11 +27,9 @@ import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.requests.RegisterRequest;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,13 +45,16 @@ public class UserService implements UserDetailsService {
 
     private final PasswordConfiguration passwordConfiguration;
 
+    private final ForgotPasswordTokenConfiguration forgotPasswordTokenConfiguration;
+
     private final EmailService emailService;
 
-    public UserService(UserRepository userRepository, UserInfoRepository userInfoRepository, RoleRepository roleRepository, ModelMapper modelMapper, PasswordConfiguration passwordConfiguration, EmailService emailService) {
+    public UserService(UserRepository userRepository, UserInfoRepository userInfoRepository, RoleRepository roleRepository, ModelMapper modelMapper, PasswordConfiguration passwordConfiguration, ForgotPasswordTokenConfiguration forgotPasswordTokenConfiguration, EmailService emailService) {
         this.userRepository = userRepository;
         this.userInfoRepository = userInfoRepository;
         this.modelMapper = modelMapper;
         this.passwordConfiguration = passwordConfiguration;
+        this.forgotPasswordTokenConfiguration = forgotPasswordTokenConfiguration;
         this.emailService = emailService;
         this.roleRepository = roleRepository;
     }
@@ -112,7 +114,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public void forgotPassword(String email, HttpServletRequest request) {
+    public void forgotPassword(String email) {
 
         String finalEmail = extractEmailAddress(email);
         UserInfoEntity userInfoEntity = userInfoRepository.findByEmail(finalEmail);
@@ -120,6 +122,7 @@ public class UserService implements UserDetailsService {
 
         if (userEntity != null) {
             userEntity.setResetToken(createUserResetToken());
+            userEntity.setTokenExpirationTime(Timestamp.valueOf((LocalDateTime.now()).plusMinutes(forgotPasswordTokenConfiguration.tokenExpirationTime)));
             save(userEntity);
             String token = userEntity.getResetToken();
             SimpleMailMessage mailMessage = getSimpleMailMessage(userEntity, token);
@@ -159,8 +162,12 @@ public class UserService implements UserDetailsService {
         //TODO: Get frontend URL from eureka
         emailBody.append("To reset your password, click the link below:\n")
                 .append("http://localhost:3000/")
+                .append("resetPassword?token=")
                 .append(token)
-                .append("/resetPassword");
+                .append("\n")
+                .append("This link will be valid only for ")
+                .append(forgotPasswordTokenConfiguration.getTokenExpirationTime())
+                .append(" minutes. Make sure you reset your password before that.");
         return emailBody.toString();
     }
 
@@ -169,6 +176,10 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByResetToken(token);
 
         if (userEntity != null) {
+            if (isDateInThePast(userEntity.getTokenExpirationTime())) {
+                // TODO [SEC-81] Mapping BE - FE errors
+                throw new RuntimeException("Reset password token is expired");
+            }
             if (request.getNewPassword().equals(request.getReTypeNewPassword())) {
                 userEntity.setResetToken(null);
                 userEntity.setPassword(passwordConfiguration.hash(request.getNewPassword()));
@@ -176,7 +187,30 @@ public class UserService implements UserDetailsService {
                 UserDto userDto = modelMapper.map(userEntity, UserDto.class);
                 resetPassword(userDto);
             }
+        } else {
+            // TODO [SEC-81] Mapping BE - FE errors
+            throw new RuntimeException("Given token does not exist");
         }
+    }
+
+    public Boolean isResetPasswordTokenExpired(String token) {
+        UserEntity userEntity = userRepository.findByResetToken(token);
+        if (userEntity != null) {
+            Timestamp tokenExpirationTime = userEntity.getTokenExpirationTime();
+            return isDateInThePast(tokenExpirationTime);
+        } else {
+            // TODO [SEC-81] Mapping BE - FE errors
+            throw new RuntimeException("Given token does not exist");
+        }
+    }
+
+    /**
+     * Checks if the date-time given as parameter is in the past
+     * @param time The given date-time
+     * @return true if that date-time is in the past
+     */
+    private Boolean isDateInThePast(Timestamp time) {
+        return time.before(Timestamp.valueOf(LocalDateTime.now()));
     }
 
     private void updatePassword(UserDto userDto) {
