@@ -17,9 +17,7 @@ import ro.secur.auth.dto.UserInfoDto;
 import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.entity.UserInfoEntity;
-import ro.secur.auth.exceptions.custom.InvalidPasswordException;
-import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
-import ro.secur.auth.exceptions.custom.UserNotFoundException;
+import ro.secur.auth.exceptions.custom.*;
 import ro.secur.auth.repository.RoleRepository;
 import ro.secur.auth.repository.UserInfoRepository;
 import ro.secur.auth.repository.UserRepository;
@@ -31,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +47,10 @@ public class UserService implements UserDetailsService {
     private final PasswordConfiguration passwordConfiguration;
 
     private final EmailService emailService;
+
+    private final String EMAIL_PATTERN = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+
+    Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
     public UserService(UserRepository userRepository, UserInfoRepository userInfoRepository, RoleRepository roleRepository, ModelMapper modelMapper, PasswordConfiguration passwordConfiguration, EmailService emailService) {
         this.userRepository = userRepository;
@@ -188,6 +192,23 @@ public class UserService implements UserDetailsService {
     }
 
     public void registerUser(RegisterRequest request) {
+
+        UserEntity user = userRepository.findByUserName(request.getUsername());
+        UserInfoEntity userInfo = userInfoRepository.findByEmail(request.getEmail());
+
+        Matcher matcher = pattern.matcher(request.getEmail());
+
+        if (user != null) {
+            throw new UsernameAlreadyExistsException(request.getUsername());
+        }
+
+        if (userInfo != null) {
+            throw new EmailAlreadyExistsException(request.getEmail());
+        }
+
+        if (!matcher.matches()) {
+            throw new InvalidEmailException(request.getEmail());
+        }
 
         UserDto userDto = UserDto.builder()
                 .userName(request.getUsername())
