@@ -123,7 +123,7 @@ public class UserService implements UserDetailsService {
 
         if (userEntity != null) {
             userEntity.setResetToken(createUserResetToken());
-            userEntity.setTokenExpirationTime(Timestamp.valueOf((LocalDateTime.now()).plusMinutes(forgotPasswordTokenConfiguration.tokenExpirationTime)));
+            userEntity.setTokenExpirationTime(Timestamp.valueOf((LocalDateTime.now()).plusMinutes(forgotPasswordTokenConfiguration.getTokenExpirationTime())));
             save(userEntity);
             String token = userEntity.getResetToken();
             SimpleMailMessage mailMessage = getSimpleMailMessage(userEntity, token);
