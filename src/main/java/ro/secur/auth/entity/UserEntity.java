@@ -3,6 +3,7 @@ package ro.secur.auth.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Getter
@@ -23,6 +24,8 @@ public class UserEntity {
     private String password;
 
     private String resetToken;
+
+    private Timestamp tokenExpirationTime;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_INFO_ID")

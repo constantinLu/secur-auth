@@ -1,15 +1,8 @@
 package ro.secur.auth.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 import ro.secur.auth.service.UserService;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Controller used for forgot password.
@@ -25,12 +18,17 @@ public class PasswordController {
     }
 
     @PostMapping("/forgotPassword")
-    public void forgotPassword(@RequestBody String email, HttpServletRequest request) {
-        userService.forgotPassword(email, request);
+    public void forgotPassword(@RequestBody String email) {
+        userService.forgotPassword(email);
     }
 
-    @PutMapping("/{token}/resetPassword")
-    public void resetPassword(@PathVariable String token, @RequestBody ChangePasswordRequest request) {
+    @PutMapping("/resetPassword")
+    public void resetPassword(@RequestParam String token, @RequestBody ChangePasswordRequest request) {
         userService.resetUserPassword(token, request);
+    }
+
+    @GetMapping("/tokenExpired")
+    public Boolean isResetPasswordTokenExpired(@RequestParam String token) {
+        return userService.isResetPasswordTokenExpired(token);
     }
 }
