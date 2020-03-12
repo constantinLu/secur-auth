@@ -224,16 +224,16 @@ public class UserService implements UserDetailsService {
 
         Matcher matcher = pattern.matcher(request.getEmail());
 
+        if (!matcher.matches()) {
+            throw new InvalidEmailException(request.getEmail());
+        }
+
         if (user != null) {
             throw new UsernameAlreadyExistsException(request.getUsername());
         }
 
         if (userInfo != null) {
             throw new EmailAlreadyExistsException(request.getEmail());
-        }
-
-        if (!matcher.matches()) {
-            throw new InvalidEmailException(request.getEmail());
         }
 
         UserDto userDto = UserDto.builder()
