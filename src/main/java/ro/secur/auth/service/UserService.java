@@ -219,18 +219,19 @@ public class UserService implements UserDetailsService {
 
     public void registerUser(RegisterRequest request) {
 
-        UserEntity user = userRepository.findByUserName(request.getUsername());
-        UserInfoEntity userInfo = userInfoRepository.findByEmail(request.getEmail());
-
         Matcher matcher = pattern.matcher(request.getEmail());
 
         if (!matcher.matches()) {
             throw new InvalidEmailException(request.getEmail());
         }
 
+        UserEntity user = userRepository.findByUserName(request.getUsername());
+
         if (user != null) {
             throw new UsernameAlreadyExistsException(request.getUsername());
         }
+
+        UserInfoEntity userInfo = userInfoRepository.findByEmail(request.getEmail());
 
         if (userInfo != null) {
             throw new EmailAlreadyExistsException(request.getEmail());
