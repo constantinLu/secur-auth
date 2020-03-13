@@ -17,9 +17,7 @@ import ro.secur.auth.security.filter.CrossOriginFilter;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
-import static ro.secur.auth.util.Api.FORGOT_PASSWORD_URL;
-import static ro.secur.auth.util.Api.RESET_PASSWORD_URL;
-import static ro.secur.auth.util.Api.USERS_URL;
+import static ro.secur.auth.util.Api.*;
 
 @Configuration
 @EnableWebSecurity
@@ -50,7 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL, USERS_URL).permitAll()
+                .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL, USERS_URL, TOKEN_EXPIRED_URL).permitAll()
                 .and()
                 .addFilterBefore(new CrossOriginFilter(), AuthenticationFilter.class)
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
