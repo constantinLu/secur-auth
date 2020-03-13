@@ -1,5 +1,9 @@
 package ro.secur.auth.controller;
 
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +31,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "getAll users", notes = "Returns all available users in the system")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Not authenticated"),
+            @ApiResponse(code = 403, message = "Not authorized to see companies"),
+            @ApiResponse(code = 404, message = "Companies not found"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     @GetMapping("/users")
     public List<UserDto> showAllUsers() {
         return userService.getAllUsers();
