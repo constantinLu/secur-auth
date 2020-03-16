@@ -28,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import ro.secur.auth.common.Role;
 import ro.secur.auth.configuration.JwtConfiguration;
 import ro.secur.auth.security.filter.AuthenticationFilter;
+import ro.secur.auth.service.UserService;
 import ro.secur.auth.util.Api;
 
 import javax.ws.rs.core.MediaType;

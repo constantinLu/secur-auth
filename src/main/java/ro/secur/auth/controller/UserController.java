@@ -1,6 +1,8 @@
 package ro.secur.auth.controller;
 
 
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,11 +36,13 @@ public class UserController {
     }
 
     @PutMapping("/user/{username}/password")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public void changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
         userService.changePassword(username, request);
     }
 
     @PostMapping("/users")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public void register(@RequestBody RegisterRequest request) {
         userService.registerUser(request);
     }

@@ -9,9 +9,11 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ro.secur.auth.configuration.JwtConfiguration;
+import ro.secur.auth.service.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
