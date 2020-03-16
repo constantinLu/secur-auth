@@ -3,6 +3,7 @@ package ro.secur.auth.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
@@ -12,11 +13,16 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import ro.secur.auth.configuration.documentation.AuthDocumentation;
 import ro.secur.auth.security.filter.AuthenticationFilter;
-import ro.secur.auth.security.filter.JwtAuthenticationEntryPoint;
 import ro.secur.auth.security.filter.CrossOriginFilter;
+import ro.secur.auth.security.filter.JwtAuthenticationEntryPoint;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
+import springfox.documentation.spring.web.plugins.DocumentationPluginsManager;
+import springfox.documentation.spring.web.scanners.ApiDescriptionReader;
+import springfox.documentation.spring.web.scanners.ApiListingScanner;
+import springfox.documentation.spring.web.scanners.ApiModelReader;
 
 import static ro.secur.auth.util.Api.FORGOT_PASSWORD_URL;
 import static ro.secur.auth.util.Api.RESET_PASSWORD_URL;
@@ -90,5 +96,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+
+    @Primary
+    @Bean
+    public ApiListingScanner addExtraOperations(ApiDescriptionReader apiDescriptionReader, ApiModelReader apiModelReader, DocumentationPluginsManager pluginsManager) {
+        return new AuthDocumentation(apiDescriptionReader, apiModelReader, pluginsManager);
     }
 }

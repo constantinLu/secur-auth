@@ -35,8 +35,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Not authenticated"),
-            @ApiResponse(code = 403, message = "Not authorized to see companies"),
-            @ApiResponse(code = 404, message = "Companies not found"),
+            @ApiResponse(code = 403, message = "Not authorized to see users"),
+            @ApiResponse(code = 404, message = "Users not found"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @GetMapping("/users")
@@ -44,11 +44,27 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @ApiOperation(value = "change password", notes = "Changes password for a user in the system")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Not authenticated"),
+            @ApiResponse(code = 403, message = "Not authorized to change password"),
+            @ApiResponse(code = 404, message = "Users not found"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     @PutMapping("/user/{username}/password")
     public void changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
         userService.changePassword(username, request);
     }
 
+
+    @ApiOperation(value = "register user", notes = "Registers a user in the system")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Not authenticated"),
+            @ApiResponse(code = 403, message = "Not authorized to register user"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     @PostMapping("/users")
     public void register(@RequestBody RegisterRequest request) {
         userService.registerUser(request);
