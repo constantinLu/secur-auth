@@ -72,7 +72,7 @@ public class TokenVerifierFilter extends OncePerRequestFilter {
         String username = body.getSubject();
         var authorities = (List<Map<Strings, String>>) body.get(ROLES);
         Set<SimpleGrantedAuthority> simpleGrantedAuthority = authorities.stream()
-                .map(m -> new SimpleGrantedAuthority(m.get(AUTHORITY)))
+                .map(m -> new SimpleGrantedAuthority("ROLE_" + m.get(AUTHORITY)))
                 .collect(Collectors.toSet());
 
         return new PreAuthenticatedAuthenticationToken(username, null, simpleGrantedAuthority);
