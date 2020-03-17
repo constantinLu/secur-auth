@@ -7,14 +7,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ro.secur.auth.configuration.JwtConfiguration;
 import ro.secur.auth.exceptions.custom.AuthException;
 import ro.secur.auth.exceptions.custom.InputStreamException;
 import ro.secur.auth.security.authentication.AuthenticationRequest;
-import ro.secur.auth.service.UserService;
 import ro.secur.auth.util.DateUtil;
 
 import javax.servlet.FilterChain;

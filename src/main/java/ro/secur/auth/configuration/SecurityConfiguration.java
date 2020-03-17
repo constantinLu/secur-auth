@@ -50,7 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(USERS_URL).access("hasRole('ROLE_ADMIN')")
+                .antMatchers(USERS_URL).access("hasAuthority('ADMIN')")
                 .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL).permitAll()
                 .and()
                 .addFilterBefore(new CrossOriginFilter(), AuthenticationFilter.class)

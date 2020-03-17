@@ -36,13 +36,11 @@ public class UserController {
     }
 
     @PutMapping("/user/{username}/password")
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public void changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
         userService.changePassword(username, request);
     }
 
     @PostMapping("/users")
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public void register(@RequestBody RegisterRequest request) {
         userService.registerUser(request);
     }

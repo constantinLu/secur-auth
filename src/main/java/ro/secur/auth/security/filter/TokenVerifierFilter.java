@@ -9,11 +9,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ro.secur.auth.configuration.JwtConfiguration;
-import ro.secur.auth.service.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -72,7 +70,7 @@ public class TokenVerifierFilter extends OncePerRequestFilter {
         String username = body.getSubject();
         var authorities = (List<Map<Strings, String>>) body.get(ROLES);
         Set<SimpleGrantedAuthority> simpleGrantedAuthority = authorities.stream()
-                .map(m -> new SimpleGrantedAuthority("ROLE_" + m.get(AUTHORITY)))
+                .map(m -> new SimpleGrantedAuthority(m.get(AUTHORITY)))
                 .collect(Collectors.toSet());
 
         return new PreAuthenticatedAuthenticationToken(username, null, simpleGrantedAuthority);
