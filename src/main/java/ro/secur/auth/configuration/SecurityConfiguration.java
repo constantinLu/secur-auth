@@ -17,6 +17,7 @@ import ro.secur.auth.security.filter.CrossOriginFilter;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
 
+import static ro.secur.auth.common.Role.ADMIN;
 import static ro.secur.auth.util.Api.FORGOT_PASSWORD_URL;
 import static ro.secur.auth.util.Api.RESET_PASSWORD_URL;
 import static ro.secur.auth.util.Api.USERS_URL;
@@ -50,7 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(USERS_URL).access("hasAuthority('ADMIN')")
+                .antMatchers(USERS_URL).hasAuthority(ADMIN.name())
                 .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL).permitAll()
                 .and()
                 .addFilterBefore(new CrossOriginFilter(), AuthenticationFilter.class)
