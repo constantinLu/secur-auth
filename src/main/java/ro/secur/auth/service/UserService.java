@@ -18,12 +18,15 @@ import ro.secur.auth.dto.UserInfoDto;
 import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.entity.UserInfoEntity;
-import ro.secur.auth.exceptions.custom.*;
+import ro.secur.auth.exceptions.custom.InvalidPasswordException;
+import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
+import ro.secur.auth.exceptions.custom.UserNotFoundException;
 import ro.secur.auth.repository.RoleRepository;
 import ro.secur.auth.repository.UserInfoRepository;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.requests.RegisterRequest;
 import ro.secur.auth.security.password.ChangePasswordRequest;
+import ro.secur.auth.security.password.ResetPasswordRequest;
 import ro.secur.auth.util.DateUtil;
 
 import java.sql.Timestamp;
@@ -176,7 +179,7 @@ public class UserService implements UserDetailsService {
         return emailBody.toString();
     }
 
-    public void resetUserPassword(String token, ChangePasswordRequest request) {
+    public void resetUserPassword(String token, ResetPasswordRequest request) {
 
         UserEntity userEntity = userRepository.findByResetToken(token);
 

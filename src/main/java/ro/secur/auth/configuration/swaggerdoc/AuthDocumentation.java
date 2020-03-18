@@ -1,9 +1,9 @@
-package ro.secur.auth.configuration.documentation;
+package ro.secur.auth.configuration.swaggerdoc;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.collect.Multimap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import ro.secur.auth.security.authentication.AuthenticationRequest;
 import springfox.documentation.builders.ApiListingBuilder;
 import springfox.documentation.builders.OperationBuilder;
 import springfox.documentation.builders.ParameterBuilder;
@@ -26,12 +26,11 @@ import java.util.Set;
 
 public class AuthDocumentation extends ApiListingScanner {
 
-    @Autowired
     private TypeResolver typeResolver;
 
-    @Autowired
-    public AuthDocumentation(ApiDescriptionReader apiDescriptionReader, ApiModelReader apiModelReader, DocumentationPluginsManager pluginsManager) {
+    public AuthDocumentation(ApiDescriptionReader apiDescriptionReader, ApiModelReader apiModelReader, DocumentationPluginsManager pluginsManager, TypeResolver typeResolver) {
         super(apiDescriptionReader, apiModelReader, pluginsManager);
+        this.typeResolver = typeResolver;
     }
 
     @Override
@@ -43,26 +42,20 @@ public class AuthDocumentation extends ApiListingScanner {
 
         final List<Operation> operations = new ArrayList<>();
         operations.add(new OperationBuilder(new CachingOperationNameGenerator())
-                .tags(Set.of("Authentification"))
+                .tags(Set.of("Authentification: Authentication Controller"))
                 .position(0)
                 .method(HttpMethod.POST)
                 .uniqueId("login")
-                .parameters(Arrays.asList(new ParameterBuilder()
-                                .name("username")
-                                .required(true)
-                                .description("username")
-                                .parameterType("body")
-                                .type(typeResolver.resolve(String.class))
-                                .modelRef(new ModelRef("string"))
-                                .build(),
+                .parameters(Arrays.asList(
                         new ParameterBuilder()
-                                .name("password")
-                                .description("password")
-                                .parameterType("body")
+                                .name("AuthentificationRequest")
                                 .required(true)
-                                .type(typeResolver.resolve(String.class))
-                                .modelRef(new ModelRef("string"))
-                                .build()))
+                                .description("Username and pasword required")
+                                .parameterType("body")
+                                .type(typeResolver.resolve(AuthenticationRequest.class))
+                                .modelRef(new ModelRef(AuthenticationRequest.class.getSimpleName()))
+                                .build())
+                )
                 .summary("Log in") //
                 .notes("Login endpoint")
                 .build());

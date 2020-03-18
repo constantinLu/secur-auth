@@ -1,6 +1,7 @@
 package ro.secur.auth.configuration;
 
 
+import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -13,7 +14,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import ro.secur.auth.configuration.documentation.AuthDocumentation;
+import ro.secur.auth.configuration.swaggerdoc.AuthDocumentation;
 import ro.secur.auth.security.filter.AuthenticationFilter;
 import ro.secur.auth.security.filter.CrossOriginFilter;
 import ro.secur.auth.security.filter.JwtAuthenticationEntryPoint;
@@ -50,6 +51,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .cors().and()
                 .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -76,10 +79,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/webjars/**");
     }
 
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
+    }
+
+    @Primary
+    @Bean
+    public ApiListingScanner addExtraOperations(ApiDescriptionReader apiDescriptionReader, ApiModelReader apiModelReader, DocumentationPluginsManager pluginsManager, TypeResolver typeResolver) {
+        return new AuthDocumentation(apiDescriptionReader, apiModelReader, pluginsManager, typeResolver);
     }
 
     @Bean
@@ -90,17 +98,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
 
-
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-
-    @Primary
-    @Bean
-    public ApiListingScanner addExtraOperations(ApiDescriptionReader apiDescriptionReader, ApiModelReader apiModelReader, DocumentationPluginsManager pluginsManager) {
-        return new AuthDocumentation(apiDescriptionReader, apiModelReader, pluginsManager);
     }
 }

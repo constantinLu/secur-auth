@@ -1,7 +1,9 @@
 package ro.secur.auth.configuration;
 
+import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ro.secur.auth.security.authentication.AuthenticationRequest;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -23,9 +25,8 @@ import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 @EnableSwagger2
 public class SwaggerConfiguration {
 
-
     @Bean
-    public Docket api() {
+    public Docket api(TypeResolver typeResolver) {
         return new Docket(SWAGGER_2)
                 .apiInfo(apiInfo())
                 .securitySchemes(singletonList(new ApiKey("JWT", AUTHORIZATION, HEADER.name())))
@@ -40,6 +41,7 @@ public class SwaggerConfiguration {
                                 )
                                 .build())
                 )
+                .additionalModels(typeResolver.resolve(AuthenticationRequest.class))
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("ro.secur.auth"))
                 .build();
