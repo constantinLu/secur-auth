@@ -42,7 +42,7 @@ public class AuthDocumentation extends ApiListingScanner {
 
         final List<Operation> operations = new ArrayList<>();
         operations.add(new OperationBuilder(new CachingOperationNameGenerator())
-                .tags(Set.of("Authentification: Authentication Controller"))
+                .tags(Set.of("authentification: Authentication Controller"))
                 .position(0)
                 .method(HttpMethod.POST)
                 .uniqueId("login")
