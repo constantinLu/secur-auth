@@ -1,5 +1,8 @@
 package ro.secur.auth.controller;
 
+
+import static ro.secur.auth.util.Api.PREFIX_URL;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -11,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ro.secur.auth.security.password.ChangePasswordRequest;
 import ro.secur.auth.security.password.ResetPasswordRequest;
 import ro.secur.auth.service.UserService;
 
-import static ro.secur.auth.util.Api.PREFIX_URL;
 
 /**
  * Controller used for forgot password.
@@ -46,7 +47,6 @@ public class PasswordController {
     @ApiOperation(value = "reset password", notes = "Reset password of a registered user")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Not authenticated"),
             @ApiResponse(code = 403, message = "Not authorized to reset password"),
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 500, message = "Internal server error")
@@ -59,7 +59,6 @@ public class PasswordController {
     @ApiOperation(value = "expired token", notes = "Token expired")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Not authenticated"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @GetMapping("/tokenExpired")

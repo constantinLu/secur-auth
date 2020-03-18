@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import static ro.secur.auth.util.Api.LOGIN_URL;
+
 public class AuthDocumentation extends ApiListingScanner {
 
     private TypeResolver typeResolver;
@@ -50,18 +52,18 @@ public class AuthDocumentation extends ApiListingScanner {
                         new ParameterBuilder()
                                 .name("AuthentificationRequest")
                                 .required(true)
-                                .description("Username and pasword required")
+                                .description("Username and password required")
                                 .parameterType("body")
                                 .type(typeResolver.resolve(AuthenticationRequest.class))
                                 .modelRef(new ModelRef(AuthenticationRequest.class.getSimpleName()))
                                 .build())
                 )
-                .summary("Log in") //
+                .summary("Log in")
                 .notes("Login endpoint")
                 .build());
-        apis.add(new ApiDescription(null, "/api/v1/login", "Authentication documentation", operations, false));
+        apis.add(new ApiDescription(null, LOGIN_URL, "Authentication documentation", operations, false));
 
-        def.put("asd", new ApiListingBuilder(context.getDocumentationContext().getApiDescriptionOrdering())
+        def.put("Authentication", new ApiListingBuilder(context.getDocumentationContext().getApiDescriptionOrdering())
                 .apis(apis)
                 .description("Custom authentication")
                 .build());

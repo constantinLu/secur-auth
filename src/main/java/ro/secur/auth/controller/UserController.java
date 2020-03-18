@@ -1,5 +1,6 @@
 package ro.secur.auth.controller;
 
+import static ro.secur.auth.util.Api.PREFIX_URL;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -10,12 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ro.secur.auth.dto.UserDto;
 import ro.secur.auth.requests.RegisterRequest;
 import ro.secur.auth.security.password.ChangePasswordRequest;
 import ro.secur.auth.service.UserService;
-
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @CrossOrigin
 @RestController
+@RequestMapping(PREFIX_URL)
 public class UserController {
 
     private UserService userService;
@@ -56,7 +58,6 @@ public class UserController {
     public void changePassword(@PathVariable String username, @RequestBody ChangePasswordRequest request) {
         userService.changePassword(username, request);
     }
-
 
     @ApiOperation(value = "register user", notes = "Registers a user in the system")
     @ApiResponses(value = {

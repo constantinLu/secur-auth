@@ -1,6 +1,5 @@
 package ro.secur.auth.configuration;
 
-
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +24,12 @@ import springfox.documentation.spring.web.scanners.ApiDescriptionReader;
 import springfox.documentation.spring.web.scanners.ApiListingScanner;
 import springfox.documentation.spring.web.scanners.ApiModelReader;
 
-import static ro.secur.auth.util.Api.*;
+import static ro.secur.auth.common.Role.ADMIN;
+import static ro.secur.auth.util.Api.FORGOT_PASSWORD_URL;
+import static ro.secur.auth.util.Api.RESET_PASSWORD_URL;
+import static ro.secur.auth.util.Api.TOKEN_EXPIRED_URL;
+import static ro.secur.auth.util.Api.USERS_URL;
+
 
 @Configuration
 @EnableWebSecurity
@@ -57,9 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(USERS_URL).hasAuthority(ADMIN.name())
-                .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL).permitAll()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL, TOKEN_EXPIRED_URL).permitAll()
                 .and()
                 .addFilterBefore(new CrossOriginFilter(), AuthenticationFilter.class)
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
