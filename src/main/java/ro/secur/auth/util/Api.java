@@ -10,6 +10,8 @@ public class Api {
 
     public static final String FORGOT_PASSWORD_URL = PREFIX_URL + "/forgotPassword";
 
-    public static final String RESET_PASSWORD_URL = PREFIX_URL + "/{token}/resetPassword";
+    public static final String RESET_PASSWORD_URL = PREFIX_URL + "/resetPassword*";
+
+    public static final String TOKEN_EXPIRED_URL = PREFIX_URL + "/tokenExpired*";
 
 }
