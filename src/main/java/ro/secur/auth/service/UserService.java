@@ -18,17 +18,26 @@ import ro.secur.auth.dto.UserInfoDto;
 import ro.secur.auth.entity.RoleEntity;
 import ro.secur.auth.entity.UserEntity;
 import ro.secur.auth.entity.UserInfoEntity;
-import ro.secur.auth.exceptions.custom.*;
+import ro.secur.auth.exceptions.custom.EmailAlreadyExistsException;
+import ro.secur.auth.exceptions.custom.InvalidEmailException;
+import ro.secur.auth.exceptions.custom.InvalidPasswordException;
+import ro.secur.auth.exceptions.custom.PasswordMisMatchException;
+import ro.secur.auth.exceptions.custom.UserNotFoundException;
+import ro.secur.auth.exceptions.custom.UsernameAlreadyExistsException;
 import ro.secur.auth.repository.RoleRepository;
 import ro.secur.auth.repository.UserInfoRepository;
 import ro.secur.auth.repository.UserRepository;
 import ro.secur.auth.requests.RegisterRequest;
 import ro.secur.auth.security.password.ChangePasswordRequest;
+import ro.secur.auth.security.password.ResetPasswordRequest;
 import ro.secur.auth.util.DateUtil;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -176,7 +185,7 @@ public class UserService implements UserDetailsService {
         return emailBody.toString();
     }
 
-    public void resetUserPassword(String token, ChangePasswordRequest request) {
+    public void resetUserPassword(String token, ResetPasswordRequest request) {
 
         UserEntity userEntity = userRepository.findByResetToken(token);
 

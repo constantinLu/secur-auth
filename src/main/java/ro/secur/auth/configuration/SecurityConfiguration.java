@@ -1,23 +1,35 @@
 package ro.secur.auth.configuration;
 
-
+import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import ro.secur.auth.configuration.swaggerdoc.AuthDocumentation;
 import ro.secur.auth.security.filter.AuthenticationFilter;
-import ro.secur.auth.security.filter.JwtAuthenticationEntryPoint;
 import ro.secur.auth.security.filter.CrossOriginFilter;
+import ro.secur.auth.security.filter.JwtAuthenticationEntryPoint;
 import ro.secur.auth.security.filter.TokenVerifierFilter;
 import ro.secur.auth.service.UserService;
+import springfox.documentation.spring.web.plugins.DocumentationPluginsManager;
+import springfox.documentation.spring.web.scanners.ApiDescriptionReader;
+import springfox.documentation.spring.web.scanners.ApiListingScanner;
+import springfox.documentation.spring.web.scanners.ApiModelReader;
 
-import static ro.secur.auth.util.Api.*;
+import static ro.secur.auth.common.Role.ADMIN;
+import static ro.secur.auth.util.Api.FORGOT_PASSWORD_URL;
+import static ro.secur.auth.util.Api.RESET_PASSWORD_URL;
+import static ro.secur.auth.util.Api.TOKEN_EXPIRED_URL;
+import static ro.secur.auth.util.Api.USERS_URL;
+
 
 @Configuration
 @EnableWebSecurity
@@ -49,7 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(USERS_URL).hasAuthority(ADMIN.name())
-                .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL).permitAll()
+                .antMatchers(RESET_PASSWORD_URL, FORGOT_PASSWORD_URL, TOKEN_EXPIRED_URL).permitAll()
                 .and()
                 .addFilterBefore(new CrossOriginFilter(), AuthenticationFilter.class)
                 .addFilter(new AuthenticationFilter(authenticationManager(), jwtConfiguration))
@@ -60,8 +72,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**");
+    }
+
+    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
+    }
+
+    @Primary
+    @Bean
+    public ApiListingScanner addExtraOperations(ApiDescriptionReader apiDescriptionReader, ApiModelReader apiModelReader, DocumentationPluginsManager pluginsManager, TypeResolver typeResolver) {
+        return new AuthDocumentation(apiDescriptionReader, apiModelReader, pluginsManager, typeResolver);
     }
 
     @Bean
@@ -71,7 +99,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         authProvider.setUserDetailsService(userService);
         return authProvider;
     }
-
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
