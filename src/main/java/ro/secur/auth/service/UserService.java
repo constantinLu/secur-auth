@@ -200,6 +200,9 @@ public class UserService implements UserDetailsService {
                 save(userEntity);
                 UserDto userDto = modelMapper.map(userEntity, UserDto.class);
                 resetPassword(userDto);
+            } else {
+                throw new PasswordMisMatchException(String.format
+                        ("New Password: %s, RetypedPassword %s", request.getNewPassword(), request.getReTypeNewPassword()));
             }
         } else {
             // TODO [SEC-81] Mapping BE - FE errors
