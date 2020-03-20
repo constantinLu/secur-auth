@@ -142,7 +142,7 @@ public class UserService implements UserDetailsService {
             SimpleMailMessage mailMessage = getSimpleMailMessage(userEntity, token);
             emailService.sendEmail(mailMessage);
         } else {
-            throw new RuntimeException("Invalid email");
+            throw new InvalidEmailException(String.format("Email %s", finalEmail));
         }
     }
 
