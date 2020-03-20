@@ -141,6 +141,8 @@ public class UserService implements UserDetailsService {
             String token = userEntity.getResetToken();
             SimpleMailMessage mailMessage = getSimpleMailMessage(userEntity, token);
             emailService.sendEmail(mailMessage);
+        } else {
+            throw new RuntimeException("Invalid email");
         }
     }
 
@@ -234,19 +236,19 @@ public class UserService implements UserDetailsService {
         Matcher matcher = pattern.matcher(request.getEmail());
 
         if (!matcher.matches()) {
-            throw new InvalidEmailException(request.getEmail());
+            throw new InvalidEmailException(String.format("Email %s", request.getEmail()));
         }
 
         UserEntity user = userRepository.findByUserName(request.getUsername());
 
         if (user != null) {
-            throw new UsernameAlreadyExistsException(request.getUsername());
+            throw new UsernameAlreadyExistsException(String.format("UserName %s", request.getUsername()));
         }
 
         UserInfoEntity userInfo = userInfoRepository.findByEmail(request.getEmail());
 
         if (userInfo != null) {
-            throw new EmailAlreadyExistsException(request.getEmail());
+            throw new EmailAlreadyExistsException(String.format("Email: %s", request.getEmail()));
         }
 
         UserDto userDto = UserDto.builder()
