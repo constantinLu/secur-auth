@@ -141,6 +141,8 @@ public class UserService implements UserDetailsService {
             String token = userEntity.getResetToken();
             SimpleMailMessage mailMessage = getSimpleMailMessage(userEntity, token);
             emailService.sendEmail(mailMessage);
+        } else {
+            throw new InvalidEmailException(String.format("Email %s", finalEmail));
         }
     }
 
@@ -191,7 +193,6 @@ public class UserService implements UserDetailsService {
 
         if (userEntity != null) {
             if (DateUtil.isDateInThePast(userEntity.getTokenExpirationTime())) {
-                // TODO [SEC-81] Mapping BE - FE errors
                 throw new RuntimeException("Reset password token is expired");
             }
             if (request.getNewPassword().equals(request.getReTypeNewPassword())) {
@@ -200,9 +201,11 @@ public class UserService implements UserDetailsService {
                 save(userEntity);
                 UserDto userDto = modelMapper.map(userEntity, UserDto.class);
                 resetPassword(userDto);
+            } else {
+                throw new PasswordMisMatchException(String.format
+                        ("New Password: %s, RetypedPassword %s", request.getNewPassword(), request.getReTypeNewPassword()));
             }
         } else {
-            // TODO [SEC-81] Mapping BE - FE errors
             throw new RuntimeException("Given token does not exist");
         }
     }
@@ -213,7 +216,6 @@ public class UserService implements UserDetailsService {
             Timestamp tokenExpirationTime = userEntity.getTokenExpirationTime();
             return DateUtil.isDateInThePast(tokenExpirationTime);
         } else {
-            // TODO [SEC-81] Mapping BE - FE errors
             throw new RuntimeException("Given token does not exist");
         }
     }
@@ -231,19 +233,19 @@ public class UserService implements UserDetailsService {
         Matcher matcher = pattern.matcher(request.getEmail());
 
         if (!matcher.matches()) {
-            throw new InvalidEmailException(request.getEmail());
+            throw new InvalidEmailException(String.format("Email %s", request.getEmail()));
         }
 
         UserEntity user = userRepository.findByUserName(request.getUsername());
 
         if (user != null) {
-            throw new UsernameAlreadyExistsException(request.getUsername());
+            throw new UsernameAlreadyExistsException(String.format("UserName %s", request.getUsername()));
         }
 
         UserInfoEntity userInfo = userInfoRepository.findByEmail(request.getEmail());
 
         if (userInfo != null) {
-            throw new EmailAlreadyExistsException(request.getEmail());
+            throw new EmailAlreadyExistsException(String.format("Email: %s", request.getEmail()));
         }
 
         UserDto userDto = UserDto.builder()
