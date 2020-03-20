@@ -193,7 +193,6 @@ public class UserService implements UserDetailsService {
 
         if (userEntity != null) {
             if (DateUtil.isDateInThePast(userEntity.getTokenExpirationTime())) {
-                // TODO [SEC-81] Mapping BE - FE errors
                 throw new RuntimeException("Reset password token is expired");
             }
             if (request.getNewPassword().equals(request.getReTypeNewPassword())) {
@@ -207,7 +206,6 @@ public class UserService implements UserDetailsService {
                         ("New Password: %s, RetypedPassword %s", request.getNewPassword(), request.getReTypeNewPassword()));
             }
         } else {
-            // TODO [SEC-81] Mapping BE - FE errors
             throw new RuntimeException("Given token does not exist");
         }
     }
@@ -218,7 +216,6 @@ public class UserService implements UserDetailsService {
             Timestamp tokenExpirationTime = userEntity.getTokenExpirationTime();
             return DateUtil.isDateInThePast(tokenExpirationTime);
         } else {
-            // TODO [SEC-81] Mapping BE - FE errors
             throw new RuntimeException("Given token does not exist");
         }
     }
